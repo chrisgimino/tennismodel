@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tennis Daily Matchups</title>
+<style>
+  :root{
+    --bg:#0c0c10; --panel:#15151b; --panel2:#1b1b22;
+    --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.16);
+    --text:#e8e8ec; --text-dim:#9a9aa5; --text-faint:#65656f;
+    --blue:#0076FF; --blue-dim:rgba(0,118,255,0.14);
+    --green:#3ecf8e; --green-dim:rgba(62,207,142,0.12);
+    --red:#ff5c5c; --red-dim:rgba(255,92,92,0.12);
+    --amber:#e8b13e;
+    --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);margin:0;padding:14px;font-family:var(--font);font-size:14px}
+  .root{max-width:920px;margin:0 auto}
+
+  .slate-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+  .slate-title{font-size:18px;font-weight:700;letter-spacing:-0.01em}
+  .slate-sub{font-size:11px;color:var(--text-faint);margin-top:2px}
+  .tour-pills{display:flex;gap:6px}
+  .pill{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid var(--border2);color:var(--text-dim);cursor:pointer;background:transparent}
+  .pill.on{background:var(--blue);border-color:var(--blue);color:#fff}
+
+  .match-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden}
+  .match-card.expanded{border-color:var(--border2)}
+  .match-row{display:flex;align-items:center;padding:12px 14px;cursor:pointer;gap:12px}
+  .match-row:hover{background:var(--panel2)}
+  .match-meta{font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em;min-width:78px}
+  .match-meta .surface-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px}
+  .surface-Grass{background:#5fbf6f}
+  .surface-Clay{background:#c46b3e}
+  .surface-Hard{background:#5b9bd5}
+
+  .players{flex:1;display:flex;flex-direction:column;gap:4px}
+  .prow{display:flex;align-items:center;gap:8px}
+  .pname{font-weight:600;font-size:13.5px}
+  .pname.dog{font-weight:500;color:var(--text-dim)}
+  .winprob-bar-wrap{flex:1;height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;max-width:140px}
+  .winprob-bar{height:100%;background:var(--blue);border-radius:3px}
+  .winprob-pct{font-size:11.5px;color:var(--text-dim);min-width:38px;text-align:right;font-variant-numeric:tabular-nums}
+  .lowsample-flag{font-size:9px;background:var(--amber);color:#1a1400;padding:1px 5px;border-radius:3px;font-weight:700;margin-left:4px}
+
+  .chev{color:var(--text-faint);font-size:12px;transition:transform .15s}
+  .match-card.expanded .chev{transform:rotate(90deg)}
+
+  .detail{display:none;border-top:1px solid var(--border)}
+  .match-card.expanded .detail{display:block}
+  .tabs{display:flex;border-bottom:1px solid var(--border);background:var(--panel2)}
+  .tab{flex:1;text-align:center;padding:9px 0;font-size:11.5px;font-weight:600;color:var(--text-faint);cursor:pointer;border-bottom:2px solid transparent}
+  .tab.on{color:var(--text);border-bottom-color:var(--blue)}
+  .tabpanel{display:none;padding:14px}
+  .tabpanel.on{display:block}
+
+  .bets-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+  .bet-card{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:9px 10px}
+  .bet-card.empty{display:flex;align-items:center;justify-content:center;color:var(--text-faint);font-size:11px}
+  .bet-label{font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-faint);margin-bottom:4px}
+  .bet-side{font-size:13px;font-weight:700;margin-bottom:2px}
+  .bet-odds-row{display:flex;justify-content:space-between;align-items:center}
+  .bet-odds{font-size:12px;color:var(--text-dim);font-variant-numeric:tabular-nums}
+  .bet-edge{font-size:10px;font-weight:700;color:var(--green);background:var(--green-dim);padding:1px 6px;border-radius:10px}
+
+  table.box{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.box th{text-align:left;font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.03em;padding:4px 8px;font-weight:600}
+  table.box th.num,table.box td.num{text-align:right}
+  table.box td{padding:6px 8px;border-top:1px solid var(--border)}
+  table.box td.namecell{font-weight:600}
+  table.box tr.fav td.namecell{color:var(--text)}
+  table.box tr.dog td.namecell{color:var(--text-dim)}
+
+  .sr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .sr-col h4{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-faint);margin:0 0 8px 0}
+  .stat-row{margin-bottom:9px}
+  .stat-label-row{display:flex;justify-content:space-between;font-size:11px;color:var(--text-dim);margin-bottom:3px}
+  .stat-track{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;position:relative;overflow:hidden}
+  .stat-fill{height:100%;border-radius:3px}
+  .stat-fill.fav{background:var(--blue)}
+  .stat-fill.dog{background:#6a6a78}
+  .no-data{color:var(--text-faint);font-size:11px;font-style:italic}
+
+  .footer-note{font-size:10px;color:var(--text-faint);text-align:center;margin-top:16px;line-height:1.5}
+
+  @media(max-width:600px){
+    .bets-grid{grid-template-columns:1fr}
+    .sr-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="root">
+  <div class="slate-head">
+    <div>
+      <div class="slate-title">Tennis Matchups</div>
+      <div class="slate-sub" id="slate-sub">Loading slate...</div>
+    </div>
+    <div class="tour-pills" id="tour-pills">
+      <button class="pill on" data-tour="ALL">All</button>
+      <button class="pill" data-tour="ATP">ATP</button>
+      <button class="pill" data-tour="WTA">WTA</button>
+    </div>
+  </div>
+  <div id="matches"></div>
+  <div class="footer-note">
+    Win probabilities from RotoGrinders' tennis simulation model. Best bets reflect model edge vs. consensus market, not guaranteed outcomes.
+    Odds subject to change — verify at your sportsbook before wagering.
+  </div>
+</div>
+
+<script>
+const CSV_URL = "https://raw.githubusercontent.com/chrisgimino/tennismodel/refs/heads/main/slate_widget.csv";
+
+function parseCSV(text){
+  const lines = text.split(/\r?\n/).filter(l => l.length);
+  const headers = splitCSVLine(lines[0]);
+  return lines.slice(1).map(line => {
+    const vals = splitCSVLine(line);
+    const obj = {};
+    headers.forEach((h,i) => obj[h] = vals[i] !== undefined ? vals[i] : '');
+    return obj;
+  });
+}
+function splitCSVLine(line){
+  const out = []; let cur = ''; let inQ = false;
+  for(let i=0;i<line.length;i++){
+    const c = line[i];
+    if(c === '"'){ inQ = !inQ; continue; }
+    if(c === ',' && !inQ){ out.push(cur); cur=''; continue; }
+    cur += c;
+  }
+  out.push(cur);
+  return out;
+}
+
+function num(v){ const n = parseFloat(v); return isNaN(n) ? null : n; }
+function pct(v){ const n = num(v); return n === null ? '—' : Math.round(n*100) + '%'; }
+function fmtOdds(v){
+  const n = num(v);
+  if(n === null) return '—';
+  return n > 0 ? '+' + Math.round(n) : Math.round(n).toString();
+}
+function fmt1(v){ const n = num(v); return n === null ? '—' : n.toFixed(1); }
+function fmtPctStat(v){ const n = num(v); return n === null ? null : Math.round(n*100); }
+
+function statBar(label, favVal, dogVal, favName, dogName){
+  const fv = fmtPctStat(favVal), dv = fmtPctStat(dogVal);
+  if(fv === null && dv === null){
+    return `<div class="stat-row"><div class="stat-label-row"><span>${label}</span><span class="no-data">no data</span></div></div>`;
+  }
+  const maxV = Math.max(fv||0, dv||0, 1);
+  return `
+    <div class="stat-row">
+      <div class="stat-label-row"><span>${label}</span><span>${favName.split(' ').pop()} ${fv!==null?fv+'%':'—'} · ${dogName.split(' ').pop()} ${dv!==null?dv+'%':'—'}</span></div>
+      <div class="stat-track"><div class="stat-fill fav" style="width:${fv!==null?(fv/maxV*100):0}%"></div></div>
+      <div class="stat-track" style="margin-top:2px"><div class="stat-fill dog" style="width:${dv!==null?(dv/maxV*100):0}%"></div></div>
+    </div>`;
+}
+
+function rankBadge(rank, pctile, lowSample){
+  if(lowSample === 'True' || lowSample === 'true'){
+    return `<span class="lowsample-flag">LOW SAMPLE</span>`;
+  }
+  const p = num(pctile);
+  if(p === null) return '';
+  const r = num(rank);
+  return `<span style="font-size:10px;color:var(--text-faint)">${r?('#'+Math.round(r)+' · '):''}top ${Math.round(100-p)}%</span>`;
+}
+
+function renderBetCard(market, bet){
+  if(!bet){
+    return `<div class="bet-card empty">No edge</div>`;
+  }
+  return `
+    <div class="bet-card">
+      <div class="bet-label">${market}</div>
+      <div class="bet-side">${bet.side}</div>
+      <div class="bet-odds-row">
+        <span class="bet-odds">${fmtOdds(bet.odds)}</span>
+        <span class="bet-edge">+${(num(bet.edge)||0).toFixed(market==='Moneyline'?2:1)}${market==='Moneyline'?'':' gm'} edge</span>
+      </div>
+    </div>`;
+}
+
+function renderMatch(m, bets){
+  const favWp = Math.round(num(m.fav_sim_win_pct)*100);
+  const dogWp = 100 - favWp;
+  const mlBet = bets.find(b => b.market === 'Moneyline');
+  const spreadBet = bets.find(b => b.market === 'Games Spread');
+  const totalBet = bets.find(b => b.market === 'Total Games');
+
+  const matchId = 'm' + m.event_id;
+
+  return `
+  <div class="match-card" id="${matchId}" data-tour="${m.tour}">
+    <div class="match-row" onclick="toggleMatch('${matchId}')">
+      <div class="match-meta">
+        <span class="surface-dot surface-${m.surface}"></span>${m.surface}<br>BO${parseInt(m.best_of)}
+      </div>
+      <div class="players">
+        <div class="prow">
+          <span class="pname">${m.fav_name}</span>
+          ${m.fav_low_sample==='True'?'<span class="lowsample-flag">LOW SAMPLE</span>':''}
+          <span class="winprob-bar-wrap"><span class="winprob-bar" style="width:${favWp}%"></span></span>
+          <span class="winprob-pct">${favWp}%</span>
+        </div>
+        <div class="prow">
+          <span class="pname dog">${m.dog_name}</span>
+          ${m.dog_low_sample==='True'?'<span class="lowsample-flag">LOW SAMPLE</span>':''}
+          <span class="winprob-bar-wrap"><span class="winprob-bar" style="width:${dogWp}%;background:#4a4a55"></span></span>
+          <span class="winprob-pct">${dogWp}%</span>
+        </div>
+      </div>
+      <div class="chev">▶</div>
+    </div>
+    <div class="detail">
+      <div class="tabs">
+        <div class="tab on" onclick="switchTab(event,'${matchId}','overview')">Matchup &amp; Bets</div>
+        <div class="tab" onclick="switchTab(event,'${matchId}','serve')">Serve vs Return</div>
+      </div>
+      <div class="tabpanel on" data-panel="overview">
+        <div class="bets-grid">
+          ${renderBetCard('Moneyline', mlBet)}
+          ${renderBetCard('Games Spread', spreadBet)}
+          ${renderBetCard('Total Games', totalBet)}
+        </div>
+        <table class="box">
+          <tr><th></th><th class="num">Games</th><th class="num">Aces</th><th class="num">DFs</th><th class="num">1st In%</th><th class="num">BP Saved</th></tr>
+          <tr class="fav">
+            <td class="namecell">${m.fav_name} ${rankBadge(m.fav_elo_rank,m.fav_elo_percentile,m.fav_low_sample)}</td>
+            <td class="num">${fmt1(m.fav_proj_games_won)}</td>
+            <td class="num">${fmt1(m.fav_proj_aces)}</td>
+            <td class="num">${fmt1(m.fav_proj_dfs)}</td>
+            <td class="num">${pct(m.fav_proj_1stIn_pct)}</td>
+            <td class="num">${fmt1(m.fav_proj_bp_saved)}</td>
+          </tr>
+          <tr class="dog">
+            <td class="namecell">${m.dog_name} ${rankBadge(m.dog_elo_rank,m.dog_elo_percentile,m.dog_low_sample)}</td>
+            <td class="num">${fmt1(m.dog_proj_games_won)}</td>
+            <td class="num">${fmt1(m.dog_proj_aces)}</td>
+            <td class="num">${fmt1(m.dog_proj_dfs)}</td>
+            <td class="num">${pct(m.dog_proj_1stIn_pct)}</td>
+            <td class="num">${fmt1(m.dog_proj_bp_saved)}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="tabpanel" data-panel="serve">
+        <div class="sr-grid">
+          <div class="sr-col">
+            <h4>${m.fav_name} Serve vs ${m.dog_name} Return</h4>
+            ${statBar('1st Serve In', m.fav_proj_1stIn_pct, null, m.fav_name, m.dog_name)}
+            ${statBar('1st Serve Won', m.fav_proj_1stWon_pct, m.dog_proj_ret_won_pct, m.fav_name, m.dog_name)}
+            ${statBar('2nd Serve Won', m.fav_proj_2ndWon_pct, null, m.fav_name, m.dog_name)}
+          </div>
+          <div class="sr-col">
+            <h4>${m.dog_name} Serve vs ${m.fav_name} Return</h4>
+            ${statBar('1st Serve In', m.dog_proj_1stIn_pct, null, m.dog_name, m.fav_name)}
+            ${statBar('1st Serve Won', m.dog_proj_1stWon_pct, m.fav_proj_ret_won_pct, m.dog_name, m.fav_name)}
+            ${statBar('2nd Serve Won', m.dog_proj_2ndWon_pct, null, m.dog_name, m.fav_name)}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleMatch(id){
+  document.getElementById(id).classList.toggle('expanded');
+}
+function switchTab(ev, matchId, panel){
+  ev.stopPropagation();
+  const card = document.getElementById(matchId);
+  card.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  ev.target.classList.add('on');
+  card.querySelectorAll('.tabpanel').forEach(p => p.classList.remove('on'));
+  card.querySelector(`[data-panel="${panel}"]`).classList.add('on');
+}
+
+let currentTourFilter = 'ALL';
+function applyTourFilter(){
+  document.querySelectorAll('.match-card').forEach(c => {
+    const show = currentTourFilter === 'ALL' || c.dataset.tour === currentTourFilter;
+    c.style.display = show ? '' : 'none';
+  });
+}
+
+document.getElementById('tour-pills').addEventListener('click', (e) => {
+  if(!e.target.classList.contains('pill')) return;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
+  e.target.classList.add('on');
+  currentTourFilter = e.target.dataset.tour;
+  applyTourFilter();
+});
+
+fetch(CSV_URL)
+  .then(r => r.text())
+  .then(text => {
+    const rows = parseCSV(text);
+    const matches = rows.filter(r => r.record_type === 'MATCH');
+    const bestbets = rows.filter(r => r.record_type === 'BESTBET');
+
+    const container = document.getElementById('matches');
+    if(matches.length === 0){
+      container.innerHTML = '<div style="text-align:center;color:var(--text-faint);padding:40px 0">No matches available for this slate.</div>';
+      document.getElementById('slate-sub').textContent = 'No data';
+      return;
+    }
+
+    document.getElementById('slate-sub').textContent =
+      `${matches.length} matches · ${matches.filter(m=>m.tour==='ATP').length} ATP · ${matches.filter(m=>m.tour==='WTA').length} WTA`;
+
+    container.innerHTML = matches.map(m => {
+      const bets = bestbets.filter(b => b.event_id === m.event_id);
+      return renderMatch(m, bets);
+    }).join('');
+  })
+  .catch(err => {
+    document.getElementById('matches').innerHTML =
+      `<div style="text-align:center;color:var(--red);padding:40px 0">Failed to load slate data.</div>`;
+    document.getElementById('slate-sub').textContent = 'Error loading data';
+    console.error(err);
+  });
+</script>
+</body>
+</html>
