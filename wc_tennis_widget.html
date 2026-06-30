@@ -11,7 +11,7 @@
   /* Near-black dark theme */
   --bg:#050608; --bg2:#0a0c10; --bg3:#0f1218; --bg4:#161a22;
   --bd:#1a1e26; --bd2:#252b36;
-  --txt:#eef0f4; --sub:#7e8898; --dim:#454c58;
+  --txt:#f5f6f9; --sub:#a8b2c2; --dim:#6b7382;
   --wh:#ffffff;
 
   --court:#1d6e5c;
@@ -33,7 +33,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .brand-bar{background:var(--bg2);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd)}
 .brand-left{display:flex;align-items:center;gap:9px}
 .brand-logo{height:22px;width:auto;display:block}
-.brand-logo-fallback{height:22px;width:22px;border-radius:5px;background:var(--court);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--wh)}
+.brand-logo-fallback{height:22px;padding:0 10px;border-radius:5px;background:var(--court);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--wh);letter-spacing:.5px}
 .brand-sub{font-size:9px;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;font-weight:700}
 
 .view-toggle{background:var(--bg2);border-bottom:1px solid var(--bd);padding:9px 16px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
@@ -78,25 +78,34 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .landing-empty{text-align:center;color:var(--dim);padding:40px 0;font-size:12px}
 
 .bbflat-list{display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:6px;overflow:hidden}
-.bbflat-row{display:grid;grid-template-columns:44px 1fr auto auto;gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--bd);cursor:pointer;background:var(--bg2);transition:.1s}
+.bbflat-row{display:grid;grid-template-columns:64px 1fr auto auto auto auto;gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--bd);cursor:pointer;background:var(--bg2);transition:.1s}
 .bbflat-row:last-child{border-bottom:none}
 .bbflat-row:hover{background:var(--bg3)}
-.bbflat-mkt{font-size:9px;font-weight:800;letter-spacing:.4px;color:var(--sub);background:var(--bg4);border:1px solid var(--bd2);border-radius:3px;padding:3px 0;text-align:center}
+.bbflat-mkt{font-size:10px;font-weight:700;letter-spacing:.2px;color:var(--sub);background:var(--bg4);border:1px solid var(--bd2);border-radius:3px;padding:4px 6px;text-align:center}
 .bbflat-main{display:flex;flex-direction:column;gap:1px;min-width:0}
-.bbflat-side{font-size:13px;font-weight:700;color:var(--wh);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bbflat-match{font-size:10px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bbflat-odds{font-size:12.5px;font-weight:700;color:var(--sub);text-align:right;min-width:44px}
-.bbflat-edge{font-size:12.5px;font-weight:800;text-align:right;min-width:52px;padding:3px 8px;border-radius:3px}
-.bbflat-edge.hi{color:var(--g);background:var(--gbg)}
-.bbflat-edge.md{color:var(--sub);background:var(--neutralbg)}
-.bbflat-edge.lo{color:var(--dim);background:var(--bg3)}
+.bbflat-side{font-size:13px;font-weight:700;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bbflat-match{font-size:10px;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bbflat-odds{font-size:12.5px;font-weight:700;color:var(--txt);text-align:right;min-width:44px}
+.bbflat-edge{font-size:12px;font-weight:800;text-align:right;min-width:64px;padding:3px 8px;border-radius:3px;white-space:nowrap}
+.bbflat-edge.hi{color:#4ade80;background:var(--gbg)}
+.bbflat-edge.md{color:var(--txt);background:var(--neutralbg)}
+.bbflat-edge.lo{color:var(--sub);background:var(--bg3)}
+
+.book-chip{font-size:9px;font-weight:700;padding:3px 7px;border-radius:3px;white-space:nowrap}
+.grade-badge{font-size:11px;font-weight:900;padding:3px 8px;border-radius:3px;text-align:center;min-width:28px;background:var(--bg4);color:var(--txt);border:1px solid var(--bd2)}
+.grade-Aplus,.grade-A{background:var(--gbg);color:#4ade80;border:1px solid var(--gbd)}
+.grade-Bplus,.grade-B{background:var(--neutralbg);color:var(--txt);border:1px solid var(--bd2)}
+.grade-Cplus,.grade-C{background:var(--bg3);color:var(--sub);border:1px solid var(--bd)}
+.grade-D{background:var(--bg3);color:var(--dim);border:1px solid var(--bd)}
 
 @media(max-width:560px){
-  .bbflat-row{grid-template-columns:38px 1fr auto;grid-template-areas:"mkt main edge" ". odds odds"}
+  .bbflat-row{grid-template-columns:1fr auto;grid-template-areas:"main edge" "mkt odds" "book grade"}
   .bbflat-mkt{grid-area:mkt}
   .bbflat-main{grid-area:main}
   .bbflat-edge{grid-area:edge}
   .bbflat-odds{grid-area:odds;text-align:left}
+  .book-chip{grid-area:book}
+  .grade-badge{grid-area:grade}
 }
 
 /* ── MATCH HEADER ── */
@@ -110,7 +119,12 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .gh-lowsample{display:inline-block;font-size:8px;font-weight:800;background:var(--abg);color:var(--a);border:1px solid var(--abd);padding:1px 5px;border-radius:2px;letter-spacing:.4px}
 .gh-ml{font-size:18px;font-weight:800;color:var(--sub)}
 .gh-ml.fav{color:var(--ball)}
-.gh-prob{font-size:11px;color:var(--sub)}
+.gh-prob{font-size:11px;color:var(--sub);font-weight:600}
+.gh-prob.wp-hi{color:#4ade80}
+.gh-prob.wp-lo{color:var(--r)}
+.gh-prob.wp-md{color:var(--sub)}
+.gh-ml.odds-fav{color:var(--ball)}
+.gh-ml.odds-dog{color:var(--sub)}
 .gh-mid{display:flex;flex-direction:column;align-items:center;gap:5px}
 .gh-ou-box{background:var(--bg4);border:1px solid var(--bd2);padding:6px 18px;border-radius:4px;font-size:17px;font-weight:800;color:var(--wh);text-align:center}
 .gh-ou-lbl{font-size:8px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;text-align:center;margin-top:2px}
@@ -137,7 +151,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 /* ── BEST BETS / GRADES (match-level ranked list, ALWAYS shown) ── */
 .bb-match-wrap{padding:14px 16px;border-bottom:1px solid var(--bd)}
 .bb-match-hdr{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
-.bbm-row{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--bg3)}
+.bbm-row{display:grid;grid-template-columns:auto 1fr auto auto auto auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--bg3)}
 .bbm-row:last-child{border-bottom:none}
 .bbm-rank{font-size:13px;font-weight:900;color:var(--dim);min-width:18px}
 .bbm-row.qual .bbm-rank{color:var(--ball)}
@@ -209,7 +223,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 <div class="brand-bar">
   <div class="brand-left">
     <img class="brand-logo" id="brandLogoImg" src="" alt="" style="display:none">
-    <div class="brand-logo-fallback" id="brandLogoFallback">A</div>
+    <div class="brand-logo-fallback" id="brandLogoFallback">ACTION</div>
   </div>
   <div class="brand-sub">Tennis Daily Matchups</div>
 </div>
@@ -296,7 +310,7 @@ function pctileCls(v){
   return 'md';
 }
 
-const MKT_ABBR={'Moneyline':'ML','Games Spread':'SP','Total Games':'TO'};
+const MKT_LABEL={'Moneyline':'Moneyline','Games Spread':'Spread','Total Games':'Total'};
 
 let DATA={matches:[],bets:[]};
 let AG=null, AT='ov', TOURFILTER='ALL', VIEW='landing', SOON_ONLY=false, LANDING_SUB='bestbets';
@@ -437,10 +451,10 @@ function matchCardHtml(m, mode){
   ['Moneyline','Games Spread','Total Games'].forEach(function(mkt){
     const b = bets.find(function(x){ return x.market===mkt; });
     if(!b) return;
-    const abbr = MKT_ABBR[mkt];
+    const label = MKT_LABEL[mkt];
     const edgeVal = num(b.edge)||0;
     const cls = edgeColorCls(edgeVal, 0.05);
-    gradesHtml += '<span class="grade-chip '+cls+'">'+abbr+' '+(edgeVal*100).toFixed(1)+'pp</span>';
+    gradesHtml += '<span class="grade-chip '+cls+'">'+label+': '+(edgeVal*100).toFixed(1)+'% edge'+(b.grade?' ('+b.grade+')':'')+'</span>';
   });
 
   return '<div class="match-card" data-eid="'+m.event_id+'">'+
@@ -463,19 +477,41 @@ function attachCardHandlers(wrap){
   });
 }
 
+const BOOK_COLORS={
+  'DraftKings':  {bg:'#0a2a0d', fg:'#53d769', bd:'#1d6e2f'},
+  'FanDuel':     {bg:'#0a1530', fg:'#3d7eff', bd:'#1a3d8f'},
+  'BetMGM':      {bg:'#2a1a05', fg:'#d4a017', bd:'#7a5c0f'},
+  'Caesars':     {bg:'#1f1505', fg:'#c9a227', bd:'#6b551a'},
+  'SportingBet': {bg:'#1a0a1f', fg:'#b366d9', bd:'#5e2e6e'},
+  'BetanoUK':    {bg:'#2a0a0a', fg:'#ff5c5c', bd:'#7a1d1d'},
+  'BetanoBR':    {bg:'#2a0a0a', fg:'#ff8a5c', bd:'#7a3a1d'},
+};
+function bookChip(book){
+  if(!book) return '';
+  const c = BOOK_COLORS[book] || {bg:'var(--bg4)', fg:'var(--sub)', bd:'var(--bd2)'};
+  return '<span class="book-chip" style="background:'+c.bg+';color:'+c.fg+';border:1px solid '+c.bd+'">'+book+'</span>';
+}
+
+function gradeBadge(grade){
+  if(!grade) return '';
+  return '<span class="grade-badge grade-'+grade.replace('+','plus')+'">'+grade+'</span>';
+}
+
 function bestBetRowHtml(bet, m){
   const edgeVal = num(bet.edge)||0;
   const cls = edgeColorCls(edgeVal, 0.05);
   const matchLabel = m ? (lastName(m.fav_name)+' vs '+lastName(m.dog_name)) : '';
   const timeLabel = m ? fmtMatchTime(m.scheduled_date) : '';
   return '<div class="bbflat-row" data-eid="'+bet.event_id+'">'+
-    '<span class="bbflat-mkt">'+(MKT_ABBR[bet.market]||bet.market)+'</span>'+
+    '<span class="bbflat-mkt">'+(MKT_LABEL[bet.market]||bet.market)+'</span>'+
     '<div class="bbflat-main">'+
       '<span class="bbflat-side">'+bet.pick_side+'</span>'+
       '<span class="bbflat-match">'+matchLabel+(timeLabel?' '+String.fromCharCode(183)+' '+timeLabel:'')+'</span>'+
     '</div>'+
     '<span class="bbflat-odds mono">'+fmtOdds(bet.pick_odds)+'</span>'+
-    '<span class="bbflat-edge mono '+cls+'">'+(edgeVal*100).toFixed(1)+'pp</span>'+
+    bookChip(bet.pick_book)+
+    gradeBadge(bet.grade)+
+    '<span class="bbflat-edge mono '+cls+'">'+(edgeVal*100).toFixed(1)+'% edge</span>'+
   '</div>';
 }
 
@@ -569,14 +605,18 @@ function renderHdr(){
   const m = matches[0];
   const favWp=Math.round(num(m.fav_final_win_pct)*100);
   const dogWp=100-favWp;
+  const favWpCls = favWp>=65?'wp-hi':favWp<=35?'wp-lo':'wp-md';
+  const dogWpCls = dogWp>=65?'wp-hi':dogWp<=35?'wp-lo':'wp-md';
+  const favOddsCls = num(m.fav_ml_odds)<0 ? 'odds-fav' : 'odds-dog';
+  const dogOddsCls = num(m.dog_ml_odds)<0 ? 'odds-fav' : 'odds-dog';
   document.getElementById('gameHdr').innerHTML=
     '<div class="gh-event">'+(m.event_name||'')+'<span class="gh-event-time">'+String.fromCharCode(183)+' '+fmtMatchTime(m.scheduled_date)+'</span></div>'+
     '<div class="gh-grid">'+
     '<div class="gh-player">'+
       '<div class="gh-name">'+titleCase(m.fav_name)+'</div>'+
       (isTrue(m.fav_low_sample)?'<span class="gh-lowsample">LOW SAMPLE</span>':'')+
-      '<div class="gh-ml fav mono">'+fmtOdds(m.fav_ml_odds)+'</div>'+
-      '<div class="gh-prob">'+favWp+'% win probability</div>'+
+      '<div class="gh-ml mono '+favOddsCls+'">'+fmtOdds(m.fav_ml_odds)+'</div>'+
+      '<div class="gh-prob '+favWpCls+'">'+favWp+'% win probability</div>'+
       eloVizBlock(m.fav_chart_elo_overall_pctile, m.fav_chart_elo_surface_pctile, false)+
     '</div>'+
     '<div class="gh-mid">'+
@@ -587,17 +627,16 @@ function renderHdr(){
     '<div class="gh-player r">'+
       '<div class="gh-name">'+titleCase(m.dog_name)+'</div>'+
       (isTrue(m.dog_low_sample)?'<span class="gh-lowsample">LOW SAMPLE</span>':'')+
-      '<div class="gh-ml mono">'+fmtOdds(m.dog_ml_odds)+'</div>'+
-      '<div class="gh-prob">'+dogWp+'% win probability</div>'+
+      '<div class="gh-ml mono '+dogOddsCls+'">'+fmtOdds(m.dog_ml_odds)+'</div>'+
+      '<div class="gh-prob '+dogWpCls+'">'+dogWp+'% win probability</div>'+
       eloVizBlock(m.dog_chart_elo_overall_pctile, m.dog_chart_elo_surface_pctile, true)+
     '</div>'+
     '</div>';
 }
 
 function bbmRow(rank, bet, qualifies){
-  const mktAbbr = MKT_ABBR[bet.market]||bet.market;
   const edgeVal = num(bet.edge)||0;
-  const edgeStr = (edgeVal*100).toFixed(1)+'pp';
+  const edgeStr = (edgeVal*100).toFixed(1)+'% edge';
   const cls = edgeColorCls(edgeVal, 0.05);
   let vsInfo = '';
   if(bet.market==='Moneyline'){
@@ -611,6 +650,8 @@ function bbmRow(rank, bet, qualifies){
     '<div class="bbm-rank">'+rank+'</div>'+
     '<div><span class="bb-mkt-tag" style="margin-right:8px;font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 8px;border-radius:10px;background:var(--bg4);color:var(--sub);border:1px solid var(--bd2)">'+bet.market+'</span><span class="bbm-side">'+bet.pick_side+'</span><div class="bbm-vs">'+vsInfo+'</div></div>'+
     '<span class="bbm-odds mono">'+fmtOdds(bet.pick_odds)+'</span>'+
+    bookChip(bet.pick_book)+
+    gradeBadge(bet.grade)+
     '<span class="bbm-edge '+cls+'">'+edgeStr+'</span>'+
   '</div>';
 }
