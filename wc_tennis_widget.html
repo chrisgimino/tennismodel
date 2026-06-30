@@ -77,6 +77,28 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .grade-chip.lo{background:var(--bg3);color:var(--dim);border:1px solid var(--bd)}
 .landing-empty{text-align:center;color:var(--dim);padding:40px 0;font-size:12px}
 
+.bbflat-list{display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:6px;overflow:hidden}
+.bbflat-row{display:grid;grid-template-columns:44px 1fr auto auto;gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--bd);cursor:pointer;background:var(--bg2);transition:.1s}
+.bbflat-row:last-child{border-bottom:none}
+.bbflat-row:hover{background:var(--bg3)}
+.bbflat-mkt{font-size:9px;font-weight:800;letter-spacing:.4px;color:var(--sub);background:var(--bg4);border:1px solid var(--bd2);border-radius:3px;padding:3px 0;text-align:center}
+.bbflat-main{display:flex;flex-direction:column;gap:1px;min-width:0}
+.bbflat-side{font-size:13px;font-weight:700;color:var(--wh);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bbflat-match{font-size:10px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bbflat-odds{font-size:12.5px;font-weight:700;color:var(--sub);text-align:right;min-width:44px}
+.bbflat-edge{font-size:12.5px;font-weight:800;text-align:right;min-width:52px;padding:3px 8px;border-radius:3px}
+.bbflat-edge.hi{color:var(--g);background:var(--gbg)}
+.bbflat-edge.md{color:var(--sub);background:var(--neutralbg)}
+.bbflat-edge.lo{color:var(--dim);background:var(--bg3)}
+
+@media(max-width:560px){
+  .bbflat-row{grid-template-columns:38px 1fr auto;grid-template-areas:"mkt main edge" ". odds odds"}
+  .bbflat-mkt{grid-area:mkt}
+  .bbflat-main{grid-area:main}
+  .bbflat-edge{grid-area:edge}
+  .bbflat-odds{grid-area:odds;text-align:left}
+}
+
 /* ── MATCH HEADER ── */
 .game-hdr{background:var(--bg2);border-bottom:1px solid var(--bd);padding:16px}
 .gh-event{font-size:11px;color:var(--sub);display:flex;align-items:center;gap:8px;margin-bottom:12px}
@@ -441,30 +463,45 @@ function attachCardHandlers(wrap){
   });
 }
 
+function bestBetRowHtml(bet, m){
+  const edgeVal = num(bet.edge)||0;
+  const cls = edgeColorCls(edgeVal, 0.05);
+  const matchLabel = m ? (lastName(m.fav_name)+' vs '+lastName(m.dog_name)) : '';
+  const timeLabel = m ? fmtMatchTime(m.scheduled_date) : '';
+  return '<div class="bbflat-row" data-eid="'+bet.event_id+'">'+
+    '<span class="bbflat-mkt">'+(MKT_ABBR[bet.market]||bet.market)+'</span>'+
+    '<div class="bbflat-main">'+
+      '<span class="bbflat-side">'+bet.pick_side+'</span>'+
+      '<span class="bbflat-match">'+matchLabel+(timeLabel?' '+String.fromCharCode(183)+' '+timeLabel:'')+'</span>'+
+    '</div>'+
+    '<span class="bbflat-odds mono">'+fmtOdds(bet.pick_odds)+'</span>'+
+    '<span class="bbflat-edge mono '+cls+'">'+(edgeVal*100).toFixed(1)+'pp</span>'+
+  '</div>';
+}
+
 function renderBestBetsLanding(){
   const matches = visibleMatches();
   const wrap=document.getElementById('pane-landing');
+  const visibleIds = {};
+  matches.forEach(function(m){ visibleIds[m.event_id]=m; });
 
-  // A match qualifies for the Best Bets view if it has at least one
-  // market that clears the edge threshold.
-  const qualifyingMatches = matches.filter(function(m){
-    return betsForMatch(m.event_id).some(function(b){ return isTrue(b.meets_threshold); });
-  }).sort(function(a,b){
-    const ea = Math.max.apply(null, betsForMatch(a.event_id).map(function(x){return num(x.edge)||0;}).concat([0]));
-    const eb = Math.max.apply(null, betsForMatch(b.event_id).map(function(x){return num(x.edge)||0;}).concat([0]));
-    return eb - ea;
-  });
+  const qualifyingBets = DATA.bets.filter(function(b){
+    return visibleIds[b.event_id] && isTrue(b.meets_threshold);
+  }).sort(function(a,b){ return (num(b.edge)||0)-(num(a.edge)||0); });
 
-  if(!qualifyingMatches.length){
+  if(!qualifyingBets.length){
     wrap.innerHTML='<div class="landing-wrap"><div class="landing-empty">No qualifying best bets on this slate right now.</div></div>';
     return;
   }
 
-  let h='<div class="landing-wrap"><div class="landing-hdr"><div class="landing-title">Best Bets</div><div class="landing-count">'+qualifyingMatches.length+' matches with an edge</div></div>';
-  qualifyingMatches.forEach(function(m){ h += matchCardHtml(m, 'bestbets'); });
-  h+='</div>';
+  let h='<div class="landing-wrap"><div class="landing-hdr"><div class="landing-title">Best Bets</div><div class="landing-count">'+qualifyingBets.length+' bets</div></div>';
+  h += '<div class="bbflat-list">';
+  qualifyingBets.forEach(function(b){ h += bestBetRowHtml(b, visibleIds[b.event_id]); });
+  h += '</div></div>';
   wrap.innerHTML=h;
-  attachCardHandlers(wrap);
+  wrap.querySelectorAll('.bbflat-row').forEach(function(row){
+    row.addEventListener('click', function(){ jumpToMatch(row.getAttribute('data-eid')); });
+  });
 }
 
 function renderAllMatchesLanding(){
