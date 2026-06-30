@@ -72,8 +72,9 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .mc-wp{font-size:11.5px;color:var(--sub);min-width:34px;text-align:right;font-variant-numeric:tabular-nums}
 .mc-grades{padding:9px 14px;background:var(--bg3);display:flex;gap:6px;flex-wrap:wrap}
 .grade-chip{font-size:9.5px;font-weight:700;padding:3px 8px;border-radius:10px;display:flex;align-items:center;gap:4px}
-.grade-chip.edge{background:var(--gbg);color:#4ade80;border:1px solid var(--gbd)}
-.grade-chip.fair{background:var(--neutralbg);color:var(--sub);border:1px solid var(--bd2)}
+.grade-chip.hi{background:var(--gbg);color:#4ade80;border:1px solid var(--gbd)}
+.grade-chip.md{background:var(--neutralbg);color:var(--sub);border:1px solid var(--bd2)}
+.grade-chip.lo{background:var(--bg3);color:var(--dim);border:1px solid var(--bd)}
 .landing-empty{text-align:center;color:var(--dim);padding:40px 0;font-size:12px}
 
 /* ── MATCH HEADER ── */
@@ -96,13 +97,12 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 /* Elo visualization */
 .elo-viz{margin-top:10px;display:flex;flex-direction:column;gap:5px}
 .elo-viz.r{align-items:flex-end}
+.elo-viz-hdr{font-size:8px;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:1px}
 .elo-row{display:flex;align-items:center;gap:6px;width:100%}
 .elo-viz.r .elo-row{flex-direction:row-reverse}
 .elo-lbl{font-size:8.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.3px;min-width:38px}
 .elo-track{flex:1;max-width:110px;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden}
 .elo-fill{height:100%;border-radius:3px}
-.elo-fill.overall{background:var(--court)}
-.elo-fill.surface{background:var(--clay)}
 .elo-pct{font-size:10px;color:var(--sub);min-width:28px;text-align:right;font-variant-numeric:tabular-nums}
 
 /* ── TABS ── */
@@ -123,8 +123,9 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .bbm-vs{font-size:10px;color:var(--dim);margin-left:6px}
 .bbm-odds{font-size:13px;font-weight:700;color:var(--sub)}
 .bbm-edge{font-size:11px;font-weight:800;padding:3px 8px;border-radius:3px}
-.bbm-edge.qual{color:var(--g);background:var(--gbg);border:1px solid var(--gbd)}
-.bbm-edge.fair{color:var(--sub);background:var(--neutralbg);border:1px solid var(--bd2)}
+.bbm-edge.hi{color:var(--g);background:var(--gbg);border:1px solid var(--gbd)}
+.bbm-edge.md{color:var(--sub);background:var(--neutralbg);border:1px solid var(--bd2)}
+.bbm-edge.lo{color:var(--dim);background:var(--bg3);border:1px solid var(--bd)}
 
 /* ── BOX SCORE ── */
 .pt-hdr{padding:8px 16px;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--sub);background:var(--bg2);border-bottom:1px solid var(--bd);border-top:1px solid var(--bd)}
@@ -192,11 +193,15 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 </div>
 
 <div class="view-toggle" id="viewToggle">
-  <button class="vbtn on" data-view="landing" onclick="setView('landing',this)">All Matches</button>
+  <button class="vbtn on" data-view="landing" onclick="setView('landing',this)">Best Bets</button>
   <button class="vbtn" data-view="match" onclick="setView('match',this)">Match View</button>
   <div class="match-select" id="matchSelectWrap" style="display:none">
     <select id="matchSelect" onchange="selGame(this.value)"></select>
   </div>
+</div>
+<div class="filter-bar" id="landingSubToggle">
+  <button class="tbtn on" data-sub="bestbets" onclick="setLandingSub('bestbets',this)">Best Bets Only</button>
+  <button class="tbtn" data-sub="all" onclick="setLandingSub('all',this)">All Matches</button>
 </div>
 <div class="filter-bar" id="filterBar">
   <button class="tbtn on" data-tour="ALL" onclick="setTour('ALL',this)">All</button>
@@ -272,7 +277,7 @@ function pctileCls(v){
 const MKT_ABBR={'Moneyline':'ML','Games Spread':'SP','Total Games':'TO'};
 
 let DATA={matches:[],bets:[]};
-let AG=null, AT='ov', TOURFILTER='ALL', VIEW='landing', SOON_ONLY=false;
+let AG=null, AT='ov', TOURFILTER='ALL', VIEW='landing', SOON_ONLY=false, LANDING_SUB='bestbets';
 
 async function boot(){
   try{
@@ -354,6 +359,7 @@ function setView(v,btn){
   document.querySelectorAll('.vbtn').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');
   document.getElementById('matchSelectWrap').style.display = v==='match' ? 'flex' : 'none';
+  document.getElementById('landingSubToggle').style.display = v==='landing' ? 'flex' : 'none';
   document.getElementById('pane-landing').classList.toggle('on', v==='landing');
   document.getElementById('pane-match').classList.toggle('on', v==='match');
   if(v==='landing'){ renderLanding(); }
@@ -381,7 +387,87 @@ function populateMatchSelect(){
 }
 
 /* ── LANDING: every match, graded (edge or fair), sorted by start time ── */
+function setLandingSub(sub, btn){
+  LANDING_SUB = sub;
+  document.querySelectorAll('#landingSubToggle .tbtn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  renderLanding();
+}
+
 function renderLanding(){
+  if(LANDING_SUB==='bestbets') renderBestBetsLanding();
+  else renderAllMatchesLanding();
+}
+
+function edgeColorCls(edgeVal, threshold){
+  if(edgeVal >= threshold) return 'hi';
+  if(edgeVal >= threshold * 0.5) return 'md';
+  return 'lo';
+}
+
+function matchCardHtml(m, mode){
+  const favWp=Math.round(num(m.fav_final_win_pct)*100);
+  const dogWp=100-favWp;
+  const bets = betsForMatch(m.event_id);
+  const soon = isStartingSoon(m.scheduled_date);
+
+  let gradesHtml = '';
+  ['Moneyline','Games Spread','Total Games'].forEach(function(mkt){
+    const b = bets.find(function(x){ return x.market===mkt; });
+    if(!b) return;
+    const abbr = MKT_ABBR[mkt];
+    const edgeVal = num(b.edge)||0;
+    const cls = edgeColorCls(edgeVal, 0.05);
+    gradesHtml += '<span class="grade-chip '+cls+'">'+abbr+' '+(edgeVal*100).toFixed(1)+'pp</span>';
+  });
+
+  return '<div class="match-card" data-eid="'+m.event_id+'">'+
+    '<div class="mc-top">'+
+      '<div class="mc-event">'+(m.event_name||'')+'<span class="mc-time'+(soon?' soon':'')+'">'+fmtMatchTime(m.scheduled_date)+'</span></div>'+
+      '<div class="mc-event">'+m.surface+' '+String.fromCharCode(183)+' '+m.tour+' '+String.fromCharCode(183)+' BO'+parseInt(m.best_of)+'</div>'+
+    '</div>'+
+    '<div class="mc-players">'+
+      '<div class="mc-prow"><span class="mc-pname">'+titleCase(m.fav_name)+'</span><span class="mc-wpbar-wrap"><span class="mc-wpbar" style="width:'+favWp+'%"></span></span><span class="mc-wp mono">'+favWp+'%</span></div>'+
+      '<div class="mc-prow"><span class="mc-pname dog">'+titleCase(m.dog_name)+'</span><span class="mc-wpbar-wrap"><span class="mc-wpbar" style="width:'+dogWp+'%;background:var(--dim)"></span></span><span class="mc-wp mono">'+dogWp+'%</span></div>'+
+    '</div>'+
+    (gradesHtml ? '<div class="mc-grades">'+gradesHtml+'</div>' : '')+
+  '</div>';
+}
+
+
+function attachCardHandlers(wrap){
+  wrap.querySelectorAll('.match-card').forEach(function(card){
+    card.addEventListener('click', function(){ jumpToMatch(card.getAttribute('data-eid')); });
+  });
+}
+
+function renderBestBetsLanding(){
+  const matches = visibleMatches();
+  const wrap=document.getElementById('pane-landing');
+
+  // A match qualifies for the Best Bets view if it has at least one
+  // market that clears the edge threshold.
+  const qualifyingMatches = matches.filter(function(m){
+    return betsForMatch(m.event_id).some(function(b){ return isTrue(b.meets_threshold); });
+  }).sort(function(a,b){
+    const ea = Math.max.apply(null, betsForMatch(a.event_id).map(function(x){return num(x.edge)||0;}).concat([0]));
+    const eb = Math.max.apply(null, betsForMatch(b.event_id).map(function(x){return num(x.edge)||0;}).concat([0]));
+    return eb - ea;
+  });
+
+  if(!qualifyingMatches.length){
+    wrap.innerHTML='<div class="landing-wrap"><div class="landing-empty">No qualifying best bets on this slate right now.</div></div>';
+    return;
+  }
+
+  let h='<div class="landing-wrap"><div class="landing-hdr"><div class="landing-title">Best Bets</div><div class="landing-count">'+qualifyingMatches.length+' matches with an edge</div></div>';
+  qualifyingMatches.forEach(function(m){ h += matchCardHtml(m, 'bestbets'); });
+  h+='</div>';
+  wrap.innerHTML=h;
+  attachCardHandlers(wrap);
+}
+
+function renderAllMatchesLanding(){
   const matches = visibleMatches();
   const wrap=document.getElementById('pane-landing');
 
@@ -390,46 +476,11 @@ function renderLanding(){
     return;
   }
 
-  let h='<div class="landing-wrap"><div class="landing-hdr"><div class="landing-title">Today\u2019s Matches</div><div class="landing-count">'+matches.length+' matches</div></div>';
-
-  matches.forEach(function(m){
-    const favWp=Math.round(num(m.fav_final_win_pct)*100);
-    const dogWp=100-favWp;
-    const bets = betsForMatch(m.event_id);
-    const soon = isStartingSoon(m.scheduled_date);
-
-    let gradesHtml = '';
-    ['Moneyline','Games Spread','Total Games'].forEach(function(mkt){
-      const b = bets.find(function(x){ return x.market===mkt; });
-      const abbr = MKT_ABBR[mkt];
-      if(b && isTrue(b.meets_threshold)){
-        const edgeVal = num(b.edge)||0;
-        gradesHtml += '<span class="grade-chip edge">'+abbr+' EDGE +'+(edgeVal*100).toFixed(1)+'pp</span>';
-      } else if(b){
-        gradesHtml += '<span class="grade-chip fair">'+abbr+' FAIR</span>';
-      } else {
-        gradesHtml += '<span class="grade-chip fair">'+abbr+' N/A</span>';
-      }
-    });
-
-    h+='<div class="match-card" data-eid="'+m.event_id+'">'+
-      '<div class="mc-top">'+
-        '<div class="mc-event">'+(m.event_name||'')+'<span class="mc-time'+(soon?' soon':'')+'">'+fmtMatchTime(m.scheduled_date)+'</span></div>'+
-        '<div class="mc-event">'+m.surface+' '+String.fromCharCode(183)+' '+m.tour+' '+String.fromCharCode(183)+' BO'+parseInt(m.best_of)+'</div>'+
-      '</div>'+
-      '<div class="mc-players">'+
-        '<div class="mc-prow"><span class="mc-pname">'+titleCase(m.fav_name)+'</span><span class="mc-wpbar-wrap"><span class="mc-wpbar" style="width:'+favWp+'%"></span></span><span class="mc-wp mono">'+favWp+'%</span></div>'+
-        '<div class="mc-prow"><span class="mc-pname dog">'+titleCase(m.dog_name)+'</span><span class="mc-wpbar-wrap"><span class="mc-wpbar" style="width:'+dogWp+'%;background:var(--dim)"></span></span><span class="mc-wp mono">'+dogWp+'%</span></div>'+
-      '</div>'+
-      '<div class="mc-grades">'+gradesHtml+'</div>'+
-    '</div>';
-  });
-
+  let h='<div class="landing-wrap"><div class="landing-hdr"><div class="landing-title">All Matches</div><div class="landing-count">'+matches.length+' matches</div></div>';
+  matches.forEach(function(m){ h += matchCardHtml(m, 'all'); });
   h+='</div>';
   wrap.innerHTML=h;
-  wrap.querySelectorAll('.match-card').forEach(function(card){
-    card.addEventListener('click', function(){ jumpToMatch(card.getAttribute('data-eid')); });
-  });
+  attachCardHandlers(wrap);
 }
 
 function jumpToMatch(eid){
@@ -458,12 +509,20 @@ function render(){
   if(AT==='mc') renderMC();
 }
 
+function eloFillColor(pctile){
+  if(pctile===null) return 'var(--dim)';
+  if(pctile>=65) return 'var(--g)';
+  if(pctile<=35) return 'var(--r)';
+  return 'var(--sub)';
+}
+
 function eloVizBlock(overallPctile, surfacePctile, alignRight){
   const ovp = num(overallPctile);
   const svp = num(surfacePctile);
   return '<div class="elo-viz'+(alignRight?' r':'')+'">'+
-    '<div class="elo-row"><span class="elo-lbl">Overall</span><span class="elo-track"><span class="elo-fill overall" style="width:'+(ovp!==null?ovp:0)+'%"></span></span><span class="elo-pct mono">'+(ovp!==null?Math.round(ovp)+'%':String.fromCharCode(8212))+'</span></div>'+
-    '<div class="elo-row"><span class="elo-lbl">Surface</span><span class="elo-track"><span class="elo-fill surface" style="width:'+(svp!==null?svp:0)+'%"></span></span><span class="elo-pct mono">'+(svp!==null?Math.round(svp)+'%':String.fromCharCode(8212))+'</span></div>'+
+    '<div class="elo-viz-hdr">Elo Percentile</div>'+
+    '<div class="elo-row"><span class="elo-lbl">Overall</span><span class="elo-track"><span class="elo-fill" style="width:'+(ovp!==null?ovp:0)+'%;background:'+eloFillColor(ovp)+'"></span></span><span class="elo-pct mono">'+(ovp!==null?Math.round(ovp)+'th':String.fromCharCode(8212))+'</span></div>'+
+    '<div class="elo-row"><span class="elo-lbl">Surface</span><span class="elo-track"><span class="elo-fill" style="width:'+(svp!==null?svp:0)+'%;background:'+eloFillColor(svp)+'"></span></span><span class="elo-pct mono">'+(svp!==null?Math.round(svp)+'th':String.fromCharCode(8212))+'</span></div>'+
   '</div>';
 }
 
@@ -480,7 +539,7 @@ function renderHdr(){
       '<div class="gh-name">'+titleCase(m.fav_name)+'</div>'+
       (isTrue(m.fav_low_sample)?'<span class="gh-lowsample">LOW SAMPLE</span>':'')+
       '<div class="gh-ml fav mono">'+fmtOdds(m.fav_ml_odds)+'</div>'+
-      '<div class="gh-prob">'+favWp+'% win '+String.fromCharCode(183)+' '+(m.fav_ml_book||'')+'</div>'+
+      '<div class="gh-prob">'+favWp+'% win probability</div>'+
       eloVizBlock(m.fav_chart_elo_overall_pctile, m.fav_chart_elo_surface_pctile, false)+
     '</div>'+
     '<div class="gh-mid">'+
@@ -492,7 +551,7 @@ function renderHdr(){
       '<div class="gh-name">'+titleCase(m.dog_name)+'</div>'+
       (isTrue(m.dog_low_sample)?'<span class="gh-lowsample">LOW SAMPLE</span>':'')+
       '<div class="gh-ml mono">'+fmtOdds(m.dog_ml_odds)+'</div>'+
-      '<div class="gh-prob">'+dogWp+'% win '+String.fromCharCode(183)+' '+(m.dog_ml_book||'')+'</div>'+
+      '<div class="gh-prob">'+dogWp+'% win probability</div>'+
       eloVizBlock(m.dog_chart_elo_overall_pctile, m.dog_chart_elo_surface_pctile, true)+
     '</div>'+
     '</div>';
@@ -502,6 +561,7 @@ function bbmRow(rank, bet, qualifies){
   const mktAbbr = MKT_ABBR[bet.market]||bet.market;
   const edgeVal = num(bet.edge)||0;
   const edgeStr = (edgeVal*100).toFixed(1)+'pp';
+  const cls = edgeColorCls(edgeVal, 0.05);
   let vsInfo = '';
   if(bet.market==='Moneyline'){
     vsInfo = lastName(bet.fav_name)+' '+fmtOdds(bet.fav_odds)+' / '+lastName(bet.dog_name)+' '+fmtOdds(bet.dog_odds);
@@ -514,7 +574,7 @@ function bbmRow(rank, bet, qualifies){
     '<div class="bbm-rank">'+rank+'</div>'+
     '<div><span class="bb-mkt-tag" style="margin-right:8px;font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 8px;border-radius:10px;background:var(--bg4);color:var(--sub);border:1px solid var(--bd2)">'+bet.market+'</span><span class="bbm-side">'+bet.pick_side+'</span><div class="bbm-vs">'+vsInfo+'</div></div>'+
     '<span class="bbm-odds mono">'+fmtOdds(bet.pick_odds)+'</span>'+
-    '<span class="bbm-edge '+(qualifies?'qual':'fair')+'">'+(qualifies?'+':'')+edgeStr+(qualifies?' EDGE':' fair')+'</span>'+
+    '<span class="bbm-edge '+cls+'">'+edgeStr+'</span>'+
   '</div>';
 }
 
