@@ -2,327 +2,385 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tennis Daily Matchups</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RotoGrinders · Tennis Matchups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#0c0c10; --panel:#15151b; --panel2:#1b1b22;
-    --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.16);
-    --text:#e8e8ec; --text-dim:#9a9aa5; --text-faint:#65656f;
-    --blue:#0076FF; --blue-dim:rgba(0,118,255,0.14);
-    --green:#3ecf8e; --green-dim:rgba(62,207,142,0.12);
-    --red:#ff5c5c; --red-dim:rgba(255,92,92,0.12);
-    --amber:#e8b13e;
-    --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;
-  }
-  *{box-sizing:border-box}
-  body{background:var(--bg);color:var(--text);margin:0;padding:14px;font-family:var(--font);font-size:14px}
-  .root{max-width:920px;margin:0 auto}
+:root{
+  --rg:#0076FF; --rg-d:#0055CC; --rg-dim:#001f5c;
+  --bg:#0c0c10; --bg2:#13131c; --bg3:#1c1c28; --bg4:#252535;
+  --bd:#2a2a3e; --bd2:#38384e;
+  --txt:#f0f0fa; --sub:#a0a0c0; --dim:#505070;
+  --wh:#ffffff;
+  --g:#22c55e; --gbg:#0a2218; --gbd:#166534;
+  --a:#f59e0b; --abg:#231500; --abd:#92400e;
+  --r:#ef4444; --rbg:#220a0a; --rbd:#991b1b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-serif;font-size:13px;line-height:1.4;-webkit-font-smoothing:antialiased}
 
-  .slate-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
-  .slate-title{font-size:18px;font-weight:700;letter-spacing:-0.01em}
-  .slate-sub{font-size:11px;color:var(--text-faint);margin-top:2px}
-  .tour-pills{display:flex;gap:6px}
-  .pill{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid var(--border2);color:var(--text-dim);cursor:pointer;background:transparent}
-  .pill.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.tour-filter{background:var(--bg2);border-bottom:1px solid var(--bd);padding:7px 12px;display:flex;gap:4px}
+.tbtn{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:4px 12px;background:var(--bg3);color:var(--sub);border:1px solid var(--bd2);cursor:pointer;border-radius:2px;transition:.15s}
+.tbtn.on{background:var(--rg);color:var(--wh);border-color:var(--rg)}
 
-  .match-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden}
-  .match-card.expanded{border-color:var(--border2)}
-  .match-row{display:flex;align-items:center;padding:12px 14px;cursor:pointer;gap:12px}
-  .match-row:hover{background:var(--panel2)}
-  .match-meta{font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em;min-width:78px}
-  .match-meta .surface-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px}
-  .surface-Grass{background:#5fbf6f}
-  .surface-Clay{background:#c46b3e}
-  .surface-Hard{background:#5b9bd5}
+.game-strip{background:var(--bg2);border-bottom:1px solid var(--bd);display:flex;overflow-x:auto;padding:0 12px}
+.game-strip::-webkit-scrollbar{height:2px}
+.game-strip::-webkit-scrollbar-thumb{background:var(--rg-dim)}
+.gpill{padding:9px 18px;cursor:pointer;border-right:1px solid var(--bd);border-bottom:3px solid transparent;transition:.15s;white-space:nowrap;min-width:150px;display:flex;flex-direction:column;gap:3px}
+.gpill:hover{background:var(--bg3)}
+.gpill.active{border-bottom-color:var(--rg);background:var(--bg3)}
+.gp-teams{font-size:14px;font-weight:800;color:var(--wh);letter-spacing:.3px}
+.gp-meta{font-size:10px;color:var(--sub);letter-spacing:.3px;display:flex;gap:6px;align-items:center}
+.gp-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.gp-bestbet{font-size:9px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.4px}
 
-  .players{flex:1;display:flex;flex-direction:column;gap:4px}
-  .prow{display:flex;align-items:center;gap:8px}
-  .pname{font-weight:600;font-size:13.5px}
-  .pname.dog{font-weight:500;color:var(--text-dim)}
-  .winprob-bar-wrap{flex:1;height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;max-width:140px}
-  .winprob-bar{height:100%;background:var(--blue);border-radius:3px}
-  .winprob-pct{font-size:11.5px;color:var(--text-dim);min-width:38px;text-align:right;font-variant-numeric:tabular-nums}
-  .lowsample-flag{font-size:9px;background:var(--amber);color:#1a1400;padding:1px 5px;border-radius:3px;font-weight:700;margin-left:4px}
+.game-hdr{background:var(--bg2);border-bottom:2px solid var(--bd);padding:14px 16px;display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+.gh-player{display:flex;flex-direction:column;gap:4px}
+.gh-player.r{text-align:right;align-items:flex-end}
+.gh-rank{font-size:10px;color:var(--dim);font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+.gh-name{font-size:22px;font-weight:900;color:var(--wh);line-height:1.05;letter-spacing:-.3px}
+.gh-lowsample{display:inline-block;font-size:8px;font-weight:800;background:var(--abg);color:var(--a);border:1px solid var(--abd);padding:1px 5px;border-radius:2px;letter-spacing:.4px;margin-top:2px}
+.gh-ml{font-size:22px;font-weight:800;color:var(--wh);font-variant-numeric:tabular-nums}
+.gh-ml.fav{color:var(--a)}
+.gh-prob{font-size:11px;color:var(--sub);font-variant-numeric:tabular-nums}
+.gh-mid{display:flex;flex-direction:column;align-items:center;gap:5px}
+.gh-ou-box{background:var(--bg3);border:1px solid var(--rg-dim);padding:5px 16px;border-radius:3px;font-size:20px;font-weight:900;color:var(--wh);font-variant-numeric:tabular-nums;text-align:center}
+.gh-ou-lbl{font-size:8px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;text-align:center;margin-top:2px}
+.gh-surf{font-size:10px;color:var(--sub);text-align:center;display:flex;align-items:center;gap:4px}
 
-  .chev{color:var(--text-faint);font-size:12px;transition:transform .15s}
-  .match-card.expanded .chev{transform:rotate(90deg)}
+.tab-bar{background:var(--bg2);border-bottom:1px solid var(--bd);display:flex;padding:0 12px}
+.tab{padding:9px 15px;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--sub);cursor:pointer;border-bottom:3px solid transparent;transition:.15s;background:none;border-top:none;border-left:none;border-right:none}
+.tab:hover{color:var(--txt)}
+.tab.on{color:var(--rg);border-bottom-color:var(--rg)}
+.pane{display:none}.pane.on{display:block}
 
-  .detail{display:none;border-top:1px solid var(--border)}
-  .match-card.expanded .detail{display:block}
-  .tabs{display:flex;border-bottom:1px solid var(--border);background:var(--panel2)}
-  .tab{flex:1;text-align:center;padding:9px 0;font-size:11.5px;font-weight:600;color:var(--text-faint);cursor:pointer;border-bottom:2px solid transparent}
-  .tab.on{color:var(--text);border-bottom-color:var(--blue)}
-  .tabpanel{display:none;padding:14px}
-  .tabpanel.on{display:block}
+.bb-wrap{padding:12px 14px;border-bottom:1px solid var(--bd)}
+.bb-hdr{font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:9px}
+.bb-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.bb-card{background:var(--bg3);border:1px solid var(--bd2);border-radius:3px;padding:10px}
+.bb-card.empty{display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:11px;font-style:italic}
+.bb-mkt{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
+.bb-side{font-size:14px;font-weight:800;color:var(--wh);margin-bottom:4px;line-height:1.2}
+.bb-row{display:flex;justify-content:space-between;align-items:center}
+.bb-odds{font-size:13px;font-weight:700;color:var(--sub);font-variant-numeric:tabular-nums}
+.bb-edge{font-size:9px;font-weight:800;color:#4ade80;background:var(--gbg);border:1px solid var(--gbd);padding:2px 6px;border-radius:2px}
 
-  .bets-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
-  .bet-card{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:9px 10px}
-  .bet-card.empty{display:flex;align-items:center;justify-content:center;color:var(--text-faint);font-size:11px}
-  .bet-label{font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-faint);margin-bottom:4px}
-  .bet-side{font-size:13px;font-weight:700;margin-bottom:2px}
-  .bet-odds-row{display:flex;justify-content:space-between;align-items:center}
-  .bet-odds{font-size:12px;color:var(--text-dim);font-variant-numeric:tabular-nums}
-  .bet-edge{font-size:10px;font-weight:700;color:var(--green);background:var(--green-dim);padding:1px 6px;border-radius:10px}
+.pt-hdr{padding:7px 12px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);background:var(--bg2);border-bottom:1px solid var(--bd);border-top:1px solid var(--bd)}
+.pt{width:100%;border-collapse:collapse}
+.pt th{font-size:9px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--dim);padding:7px 5px;text-align:right;border-bottom:1px solid var(--bd2);background:var(--bg2);white-space:nowrap}
+.pt th:first-child{text-align:left;padding-left:12px;min-width:140px}
+.pt td{padding:0;border-bottom:1px solid var(--bg3);white-space:nowrap}
+.pt td:first-child{padding:6px 8px 6px 12px;font-size:13px;font-weight:600;color:var(--wh);text-align:left}
+.pt tr:hover td{filter:brightness(1.12)}
+.pt tr:hover td:first-child{background:var(--bg3)}
+.sc{display:block;padding:6px 5px;text-align:right;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.hi{background:var(--gbg);color:#4ade80}
+.md{background:var(--bg3);color:#d0d0e8}
+.lo{background:var(--rbg);color:#f87171}
+.nu{background:var(--bg);color:var(--dim);text-align:center}
+.rank-badge{font-size:9px;color:var(--dim);font-weight:600;margin-left:5px}
 
-  table.box{width:100%;border-collapse:collapse;font-size:12.5px}
-  table.box th{text-align:left;font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.03em;padding:4px 8px;font-weight:600}
-  table.box th.num,table.box td.num{text-align:right}
-  table.box td{padding:6px 8px;border-top:1px solid var(--border)}
-  table.box td.namecell{font-weight:600}
-  table.box tr.fav td.namecell{color:var(--text)}
-  table.box tr.dog td.namecell{color:var(--text-dim)}
+.sr-wrap{padding:14px}
+.sr-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.sr-col{background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:12px}
+.sr-col h4{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--sub);margin-bottom:10px;font-weight:700}
+.sr-stat{margin-bottom:11px}
+.sr-stat:last-child{margin-bottom:0}
+.sr-label-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.sr-label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+.sr-vs{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.sr-val{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;padding:2px 8px;border-radius:2px}
+.sr-novs{font-size:10px;color:var(--dim);font-style:italic}
 
-  .sr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .sr-col h4{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-faint);margin:0 0 8px 0}
-  .stat-row{margin-bottom:9px}
-  .stat-label-row{display:flex;justify-content:space-between;font-size:11px;color:var(--text-dim);margin-bottom:3px}
-  .stat-track{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;position:relative;overflow:hidden}
-  .stat-fill{height:100%;border-radius:3px}
-  .stat-fill.fav{background:var(--blue)}
-  .stat-fill.dog{background:#6a6a78}
-  .no-data{color:var(--text-faint);font-size:11px;font-style:italic}
+.disc{padding:8px 14px;font-size:9px;color:var(--dim);border-top:1px solid var(--bd);letter-spacing:.3px;line-height:1.7}
 
-  .footer-note{font-size:10px;color:var(--text-faint);text-align:center;margin-top:16px;line-height:1.5}
+#loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:12px}
+#loading-overlay.hidden{display:none}
+.ld-spinner{width:32px;height:32px;border:2px solid var(--bd2);border-top-color:var(--rg);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld-text{font-size:10px;color:var(--dim);letter-spacing:2px;text-transform:uppercase}
+.ld-err{font-size:10px;color:var(--r);letter-spacing:1px;text-align:center;max-width:300px;line-height:1.6}
 
-  @media(max-width:600px){
-    .bets-grid{grid-template-columns:1fr}
-    .sr-grid{grid-template-columns:1fr}
-  }
+@media(max-width:560px){
+  .bb-grid{grid-template-columns:1fr}
+  .sr-grid{grid-template-columns:1fr}
+  .gh-name{font-size:16px}
+  .gh-ml{font-size:16px}
+}
 </style>
 </head>
 <body>
-<div class="root">
-  <div class="slate-head">
-    <div>
-      <div class="slate-title">Tennis Matchups</div>
-      <div class="slate-sub" id="slate-sub">Loading slate...</div>
-    </div>
-    <div class="tour-pills" id="tour-pills">
-      <button class="pill on" data-tour="ALL">All</button>
-      <button class="pill" data-tour="ATP">ATP</button>
-      <button class="pill" data-tour="WTA">WTA</button>
-    </div>
-  </div>
-  <div id="matches"></div>
-  <div class="footer-note">
-    Win probabilities from RotoGrinders' tennis simulation model. Best bets reflect model edge vs. consensus market, not guaranteed outcomes.
-    Odds subject to change — verify at your sportsbook before wagering.
-  </div>
+
+<div id="loading-overlay">
+  <div class="ld-spinner"></div>
+  <div class="ld-text" id="ld-msg">Loading slate data...</div>
+  <div class="ld-err" id="ld-err" style="display:none"></div>
 </div>
 
+<div class="tour-filter" id="tourFilter">
+  <button class="tbtn on" data-tour="ALL" onclick="setTour('ALL',this)">All</button>
+  <button class="tbtn" data-tour="ATP" onclick="setTour('ATP',this)">ATP</button>
+  <button class="tbtn" data-tour="WTA" onclick="setTour('WTA',this)">WTA</button>
+</div>
+<div class="game-strip" id="gameStrip"></div>
+<div class="game-hdr" id="gameHdr"></div>
+
+<div class="tab-bar">
+  <button class="tab on" onclick="swTab(this,'ov')">Matchup &amp; Bets</button>
+  <button class="tab" onclick="swTab(this,'sr')">Serve vs Return</button>
+</div>
+
+<div class="pane on" id="pane-ov"></div>
+<div class="pane" id="pane-sr"></div>
+
+<div class="disc">PROJECTIONS &amp; ODDS DATA SUBJECT TO CHANGE AND NOT UPDATED LIVE. WIN PROBABILITIES FROM ROTOGRINDERS' TENNIS SIMULATION MODEL. BEST BETS REFLECT MODEL EDGE VS. CONSENSUS MARKET, NOT GUARANTEED OUTCOMES.</div>
+
 <script>
-const CSV_URL = "https://raw.githubusercontent.com/chrisgimino/tennismodel/refs/heads/main/slate_widget.csv";
+const CSV_URL = 'https://raw.githubusercontent.com/chrisgimino/tennismodel/refs/heads/main/slate_widget.csv';
 
 function parseCSV(text){
-  const lines = text.split(/\r?\n/).filter(l => l.length);
-  const headers = splitCSVLine(lines[0]);
-  return lines.slice(1).map(line => {
-    const vals = splitCSVLine(line);
-    const obj = {};
-    headers.forEach((h,i) => obj[h] = vals[i] !== undefined ? vals[i] : '');
-    return obj;
-  });
-}
-function splitCSVLine(line){
-  const out = []; let cur = ''; let inQ = false;
-  for(let i=0;i<line.length;i++){
-    const c = line[i];
-    if(c === '"'){ inQ = !inQ; continue; }
-    if(c === ',' && !inQ){ out.push(cur); cur=''; continue; }
-    cur += c;
-  }
-  out.push(cur);
-  return out;
-}
-
-function num(v){ const n = parseFloat(v); return isNaN(n) ? null : n; }
-function pct(v){ const n = num(v); return n === null ? '—' : Math.round(n*100) + '%'; }
-function fmtOdds(v){
-  const n = num(v);
-  if(n === null) return '—';
-  return n > 0 ? '+' + Math.round(n) : Math.round(n).toString();
-}
-function fmt1(v){ const n = num(v); return n === null ? '—' : n.toFixed(1); }
-function fmtPctStat(v){ const n = num(v); return n === null ? null : Math.round(n*100); }
-
-function statBar(label, favVal, dogVal, favName, dogName){
-  const fv = fmtPctStat(favVal), dv = fmtPctStat(dogVal);
-  if(fv === null && dv === null){
-    return `<div class="stat-row"><div class="stat-label-row"><span>${label}</span><span class="no-data">no data</span></div></div>`;
-  }
-  const maxV = Math.max(fv||0, dv||0, 1);
-  return `
-    <div class="stat-row">
-      <div class="stat-label-row"><span>${label}</span><span>${favName.split(' ').pop()} ${fv!==null?fv+'%':'—'} · ${dogName.split(' ').pop()} ${dv!==null?dv+'%':'—'}</span></div>
-      <div class="stat-track"><div class="stat-fill fav" style="width:${fv!==null?(fv/maxV*100):0}%"></div></div>
-      <div class="stat-track" style="margin-top:2px"><div class="stat-fill dog" style="width:${dv!==null?(dv/maxV*100):0}%"></div></div>
-    </div>`;
-}
-
-function rankBadge(rank, pctile, lowSample){
-  if(lowSample === 'True' || lowSample === 'true'){
-    return `<span class="lowsample-flag">LOW SAMPLE</span>`;
-  }
-  const p = num(pctile);
-  if(p === null) return '';
-  const r = num(rank);
-  return `<span style="font-size:10px;color:var(--text-faint)">${r?('#'+Math.round(r)+' · '):''}top ${Math.round(100-p)}%</span>`;
-}
-
-function renderBetCard(market, bet){
-  if(!bet){
-    return `<div class="bet-card empty">No edge</div>`;
-  }
-  return `
-    <div class="bet-card">
-      <div class="bet-label">${market}</div>
-      <div class="bet-side">${bet.side}</div>
-      <div class="bet-odds-row">
-        <span class="bet-odds">${fmtOdds(bet.odds)}</span>
-        <span class="bet-edge">+${(num(bet.edge)||0).toFixed(market==='Moneyline'?2:1)}${market==='Moneyline'?'':' gm'} edge</span>
-      </div>
-    </div>`;
-}
-
-function renderMatch(m, bets){
-  const favWp = Math.round(num(m.fav_sim_win_pct)*100);
-  const dogWp = 100 - favWp;
-  const mlBet = bets.find(b => b.market === 'Moneyline');
-  const spreadBet = bets.find(b => b.market === 'Games Spread');
-  const totalBet = bets.find(b => b.market === 'Total Games');
-
-  const matchId = 'm' + m.event_id;
-
-  return `
-  <div class="match-card" id="${matchId}" data-tour="${m.tour}">
-    <div class="match-row" onclick="toggleMatch('${matchId}')">
-      <div class="match-meta">
-        <span class="surface-dot surface-${m.surface}"></span>${m.surface}<br>BO${parseInt(m.best_of)}
-      </div>
-      <div class="players">
-        <div class="prow">
-          <span class="pname">${m.fav_name}</span>
-          ${m.fav_low_sample==='True'?'<span class="lowsample-flag">LOW SAMPLE</span>':''}
-          <span class="winprob-bar-wrap"><span class="winprob-bar" style="width:${favWp}%"></span></span>
-          <span class="winprob-pct">${favWp}%</span>
-        </div>
-        <div class="prow">
-          <span class="pname dog">${m.dog_name}</span>
-          ${m.dog_low_sample==='True'?'<span class="lowsample-flag">LOW SAMPLE</span>':''}
-          <span class="winprob-bar-wrap"><span class="winprob-bar" style="width:${dogWp}%;background:#4a4a55"></span></span>
-          <span class="winprob-pct">${dogWp}%</span>
-        </div>
-      </div>
-      <div class="chev">▶</div>
-    </div>
-    <div class="detail">
-      <div class="tabs">
-        <div class="tab on" onclick="switchTab(event,'${matchId}','overview')">Matchup &amp; Bets</div>
-        <div class="tab" onclick="switchTab(event,'${matchId}','serve')">Serve vs Return</div>
-      </div>
-      <div class="tabpanel on" data-panel="overview">
-        <div class="bets-grid">
-          ${renderBetCard('Moneyline', mlBet)}
-          ${renderBetCard('Games Spread', spreadBet)}
-          ${renderBetCard('Total Games', totalBet)}
-        </div>
-        <table class="box">
-          <tr><th></th><th class="num">Games</th><th class="num">Aces</th><th class="num">DFs</th><th class="num">1st In%</th><th class="num">BP Saved</th></tr>
-          <tr class="fav">
-            <td class="namecell">${m.fav_name} ${rankBadge(m.fav_elo_rank,m.fav_elo_percentile,m.fav_low_sample)}</td>
-            <td class="num">${fmt1(m.fav_proj_games_won)}</td>
-            <td class="num">${fmt1(m.fav_proj_aces)}</td>
-            <td class="num">${fmt1(m.fav_proj_dfs)}</td>
-            <td class="num">${pct(m.fav_proj_1stIn_pct)}</td>
-            <td class="num">${fmt1(m.fav_proj_bp_saved)}</td>
-          </tr>
-          <tr class="dog">
-            <td class="namecell">${m.dog_name} ${rankBadge(m.dog_elo_rank,m.dog_elo_percentile,m.dog_low_sample)}</td>
-            <td class="num">${fmt1(m.dog_proj_games_won)}</td>
-            <td class="num">${fmt1(m.dog_proj_aces)}</td>
-            <td class="num">${fmt1(m.dog_proj_dfs)}</td>
-            <td class="num">${pct(m.dog_proj_1stIn_pct)}</td>
-            <td class="num">${fmt1(m.dog_proj_bp_saved)}</td>
-          </tr>
-        </table>
-      </div>
-      <div class="tabpanel" data-panel="serve">
-        <div class="sr-grid">
-          <div class="sr-col">
-            <h4>${m.fav_name} Serve vs ${m.dog_name} Return</h4>
-            ${statBar('1st Serve In', m.fav_proj_1stIn_pct, null, m.fav_name, m.dog_name)}
-            ${statBar('1st Serve Won', m.fav_proj_1stWon_pct, m.dog_proj_ret_won_pct, m.fav_name, m.dog_name)}
-            ${statBar('2nd Serve Won', m.fav_proj_2ndWon_pct, null, m.fav_name, m.dog_name)}
-          </div>
-          <div class="sr-col">
-            <h4>${m.dog_name} Serve vs ${m.fav_name} Return</h4>
-            ${statBar('1st Serve In', m.dog_proj_1stIn_pct, null, m.dog_name, m.fav_name)}
-            ${statBar('1st Serve Won', m.dog_proj_1stWon_pct, m.fav_proj_ret_won_pct, m.dog_name, m.fav_name)}
-            ${statBar('2nd Serve Won', m.dog_proj_2ndWon_pct, null, m.dog_name, m.fav_name)}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>`;
-}
-
-function toggleMatch(id){
-  document.getElementById(id).classList.toggle('expanded');
-}
-function switchTab(ev, matchId, panel){
-  ev.stopPropagation();
-  const card = document.getElementById(matchId);
-  card.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
-  ev.target.classList.add('on');
-  card.querySelectorAll('.tabpanel').forEach(p => p.classList.remove('on'));
-  card.querySelector(`[data-panel="${panel}"]`).classList.add('on');
-}
-
-let currentTourFilter = 'ALL';
-function applyTourFilter(){
-  document.querySelectorAll('.match-card').forEach(c => {
-    const show = currentTourFilter === 'ALL' || c.dataset.tour === currentTourFilter;
-    c.style.display = show ? '' : 'none';
-  });
-}
-
-document.getElementById('tour-pills').addEventListener('click', (e) => {
-  if(!e.target.classList.contains('pill')) return;
-  document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
-  e.target.classList.add('on');
-  currentTourFilter = e.target.dataset.tour;
-  applyTourFilter();
-});
-
-fetch(CSV_URL)
-  .then(r => r.text())
-  .then(text => {
-    const rows = parseCSV(text);
-    const matches = rows.filter(r => r.record_type === 'MATCH');
-    const bestbets = rows.filter(r => r.record_type === 'BESTBET');
-
-    const container = document.getElementById('matches');
-    if(matches.length === 0){
-      container.innerHTML = '<div style="text-align:center;color:var(--text-faint);padding:40px 0">No matches available for this slate.</div>';
-      document.getElementById('slate-sub').textContent = 'No data';
-      return;
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,''));
+  return lines.slice(1).map(line=>{
+    const cols=[]; let cur=''; let inQ=false;
+    for(let i=0;i<line.length;i++){
+      const c=line[i];
+      if(c==='"'){inQ=!inQ;}
+      else if(c===','&&!inQ){cols.push(cur);cur='';}
+      else{cur+=c;}
     }
-
-    document.getElementById('slate-sub').textContent =
-      `${matches.length} matches · ${matches.filter(m=>m.tour==='ATP').length} ATP · ${matches.filter(m=>m.tour==='WTA').length} WTA`;
-
-    container.innerHTML = matches.map(m => {
-      const bets = bestbets.filter(b => b.event_id === m.event_id);
-      return renderMatch(m, bets);
-    }).join('');
-  })
-  .catch(err => {
-    document.getElementById('matches').innerHTML =
-      `<div style="text-align:center;color:var(--red);padding:40px 0">Failed to load slate data.</div>`;
-    document.getElementById('slate-sub').textContent = 'Error loading data';
-    console.error(err);
+    cols.push(cur);
+    const row={};
+    headers.forEach((h,i)=>{row[h]=(cols[i]||'').replace(/^"|"$/g,'').trim();});
+    return row;
   });
+}
+
+function num(v){const n=parseFloat(v);return isNaN(n)?null:n;}
+function fmtOdds(v){const n=num(v);if(n===null)return '—';return n>0?'+'+Math.round(n):''+Math.round(n);}
+function pct(v){const n=num(v);return n===null?'—':Math.round(n*100)+'%';}
+function fmt1(v){const n=num(v);return n===null?'—':n.toFixed(1);}
+function isTrue(v){return v==='True'||v==='true'||v===true;}
+
+function relCls(a,b,higherIsBetter){
+  if(higherIsBetter===undefined) higherIsBetter=true;
+  if(a===null||b===null)return 'nu';
+  if(a===b)return 'md';
+  const aWins = higherIsBetter ? a>b : a<b;
+  return aWins?'hi':'lo';
+}
+
+let DATA={matches:[],bets:[]};
+let AG=null, AT='ov', TOURFILTER='ALL';
+
+async function boot(){
+  try{
+    const res=await fetch(CSV_URL+'?t='+Date.now());
+    if(!res.ok) throw new Error('HTTP '+res.status+' — check CSV URL');
+    const text=await res.text();
+    const rows=parseCSV(text);
+    DATA.matches=rows.filter(r=>r.record_type==='MATCH');
+    DATA.bets=rows.filter(r=>r.record_type==='BESTBET');
+    if(!DATA.matches.length) throw new Error('No MATCH rows found in CSV');
+    document.getElementById('loading-overlay').classList.add('hidden');
+    init();
+  }catch(e){
+    document.querySelector('.ld-spinner').style.display='none';
+    document.getElementById('ld-msg').style.display='none';
+    document.getElementById('ld-err').style.display='block';
+    document.getElementById('ld-err').textContent='Failed to load: '+e.message;
+  }
+}
+boot();
+
+function visibleMatches(){
+  return TOURFILTER==='ALL' ? DATA.matches : DATA.matches.filter(m=>m.tour===TOURFILTER);
+}
+
+function init(){
+  renderStrip();
+  const vm=visibleMatches();
+  if(vm.length) selGame(vm[0].event_id);
+}
+
+function setTour(t,btn){
+  TOURFILTER=t;
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderStrip();
+  const vm=visibleMatches();
+  if(vm.length) selGame(vm[0].event_id);
+}
+
+function renderStrip(){
+  const strip=document.getElementById('gameStrip');
+  const vm=visibleMatches();
+  strip.innerHTML='';
+  vm.forEach((m)=>{
+    const d=document.createElement('div');
+    d.className='gpill'+(m.event_id===AG?' active':'');
+    d.id='gp-'+m.event_id;
+    d.onclick=()=>selGame(m.event_id);
+    const bets=DATA.bets.filter(b=>b.event_id===m.event_id);
+    const bbCount=bets.length;
+    const surfColor = m.surface==='Grass'?'#5fbf6f':m.surface==='Clay'?'#c46b3e':'#5b9bd5';
+    d.innerHTML='<div class="gp-teams">'+m.fav_name.split(' ').pop()+' vs '+m.dog_name.split(' ').pop()+'</div>'+
+      '<div class="gp-meta"><span class="gp-dot" style="background:'+surfColor+'"></span>'+m.surface+' · '+m.tour+
+      (bbCount?(' <span class="gp-bestbet">· '+bbCount+' bet'+(bbCount>1?'s':'')+'</span>'):'')+'</div>';
+    strip.appendChild(d);
+  });
+}
+
+function selGame(id){
+  AG=id;
+  document.querySelectorAll('.gpill').forEach(p=>p.classList.toggle('active',p.id==='gp-'+id));
+  renderHdr();
+  render();
+}
+
+function swTab(btn,t){
+  AT=t;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('pane-'+t).classList.add('on');
+  render();
+}
+
+function render(){
+  if(AT==='ov') renderOV();
+  if(AT==='sr') renderSR();
+}
+
+function renderHdr(){
+  const m=DATA.matches.find(x=>x.event_id===AG); if(!m)return;
+  const favWp=Math.round(num(m.fav_sim_win_pct)*100);
+  const dogWp=100-favWp;
+  document.getElementById('gameHdr').innerHTML=
+    '<div class="gh-player">'+
+      '<div class="gh-rank">'+(m.fav_elo_rank&&num(m.fav_elo_rank)!==null?('Elo #'+Math.round(num(m.fav_elo_rank))):'Favorite')+'</div>'+
+      '<div class="gh-name">'+m.fav_name.toUpperCase()+'</div>'+
+      (isTrue(m.fav_low_sample)?'<span class="gh-lowsample">LOW SAMPLE</span>':'')+
+      '<div class="gh-ml fav">'+fmtOdds(m.fav_ml_odds)+'</div>'+
+      '<div class="gh-prob">'+favWp+'% win · '+(m.fav_ml_book||'')+'</div>'+
+    '</div>'+
+    '<div class="gh-mid">'+
+      '<div class="gh-ou-box">'+(m.market_total_line||'—')+'</div>'+
+      '<div class="gh-ou-lbl">Total Games</div>'+
+      '<div class="gh-surf">'+m.surface+' · BO'+parseInt(m.best_of)+'</div>'+
+    '</div>'+
+    '<div class="gh-player r">'+
+      '<div class="gh-rank">'+(m.dog_elo_rank&&num(m.dog_elo_rank)!==null?('Elo #'+Math.round(num(m.dog_elo_rank))):'Underdog')+'</div>'+
+      '<div class="gh-name">'+m.dog_name.toUpperCase()+'</div>'+
+      (isTrue(m.dog_low_sample)?'<span class="gh-lowsample">LOW SAMPLE</span>':'')+
+      '<div class="gh-ml">'+fmtOdds(m.dog_ml_odds)+'</div>'+
+      '<div class="gh-prob">'+dogWp+'% win · '+(m.dog_ml_book||'')+'</div>'+
+    '</div>';
+}
+
+function bbCard(market,bet){
+  if(!bet) return '<div class="bb-card empty">No edge</div>';
+  const edgeVal=num(bet.edge)||0;
+  const edgeStr = market==='Moneyline' ? (edgeVal*100).toFixed(1)+'pp' : edgeVal.toFixed(1)+' gm';
+  return '<div class="bb-card">'+
+    '<div class="bb-mkt">'+market+'</div>'+
+    '<div class="bb-side">'+bet.side+'</div>'+
+    '<div class="bb-row">'+
+      '<span class="bb-odds">'+fmtOdds(bet.odds)+'</span>'+
+      '<span class="bb-edge">+'+edgeStr+' edge</span>'+
+    '</div>'+
+  '</div>';
+}
+
+function renderOV(){
+  const m=DATA.matches.find(x=>x.event_id===AG); if(!m)return;
+  const bets=DATA.bets.filter(b=>b.event_id===AG);
+  const mlBet=bets.find(b=>b.market==='Moneyline');
+  const spBet=bets.find(b=>b.market==='Games Spread');
+  const toBet=bets.find(b=>b.market==='Total Games');
+
+  let h='<div class="bb-wrap">'+
+    '<div class="bb-hdr">Best Bets</div>'+
+    '<div class="bb-grid">'+
+      bbCard('Moneyline',mlBet)+
+      bbCard('Games Spread',spBet)+
+      bbCard('Total Games',toBet)+
+    '</div>'+
+  '</div>';
+
+  h+='<div class="pt-hdr">Box Score Projection</div>'+
+  '<table class="pt">'+
+    '<tr><th>Player</th><th>Games</th><th>Aces</th><th>DFs</th><th>1st In%</th><th>1st Won%</th><th>2nd Won%</th><th>BP Saved</th></tr>'+
+    buildRow(m,'fav')+
+    buildRow(m,'dog')+
+  '</table>';
+
+  document.getElementById('pane-ov').innerHTML=h;
+}
+
+function buildRow(m,side){
+  const o = side==='fav' ? 'dog' : 'fav';
+  const gw=num(m[side+'_proj_games_won']), gwO=num(m[o+'_proj_games_won']);
+  const ac=num(m[side+'_proj_aces']), acO=num(m[o+'_proj_aces']);
+  const df=num(m[side+'_proj_dfs']), dfO=num(m[o+'_proj_dfs']);
+  const fi=num(m[side+'_proj_1stIn_pct']), fiO=num(m[o+'_proj_1stIn_pct']);
+  const fw=num(m[side+'_proj_1stWon_pct']), fwO=num(m[o+'_proj_1stWon_pct']);
+  const sw=num(m[side+'_proj_2ndWon_pct']), swO=num(m[o+'_proj_2ndWon_pct']);
+  const bp=num(m[side+'_proj_bp_saved']), bpO=num(m[o+'_proj_bp_saved']);
+  const rankVal=m[side+'_elo_rank'];
+  const rankBadge = rankVal && num(rankVal)!==null ? ('<span class="rank-badge">#'+Math.round(num(rankVal))+'</span>') : '';
+
+  return '<tr>'+
+    '<td>'+m[side+'_name']+rankBadge+'</td>'+
+    '<td><span class="sc '+relCls(gw,gwO,true)+'">'+fmt1(gw)+'</span></td>'+
+    '<td><span class="sc '+relCls(ac,acO,true)+'">'+fmt1(ac)+'</span></td>'+
+    '<td><span class="sc '+relCls(df,dfO,false)+'">'+fmt1(df)+'</span></td>'+
+    '<td><span class="sc '+relCls(fi,fiO,true)+'">'+pct(fi)+'</span></td>'+
+    '<td><span class="sc '+relCls(fw,fwO,true)+'">'+pct(fw)+'</span></td>'+
+    '<td><span class="sc '+relCls(sw,swO,true)+'">'+pct(sw)+'</span></td>'+
+    '<td><span class="sc '+relCls(bp,bpO,true)+'">'+fmt1(bp)+'</span></td>'+
+  '</tr>';
+}
+
+function srStat(label, favVal, dogVal, favName, dogName, higherIsBetter){
+  if(higherIsBetter===undefined) higherIsBetter=true;
+  const fv=num(favVal), dv=num(dogVal);
+  if(fv===null && dv===null){
+    return '<div class="sr-stat"><div class="sr-label-row"><span class="sr-label">'+label+'</span><span class="sr-novs">no data</span></div></div>';
+  }
+  const favCls = relCls(fv,dv,higherIsBetter);
+  const dogCls = relCls(dv,fv,higherIsBetter);
+  return '<div class="sr-stat">'+
+    '<div class="sr-label-row"><span class="sr-label">'+label+'</span></div>'+
+    '<div class="sr-vs">'+
+      '<span class="sr-val '+favCls+'">'+(fv!==null?Math.round(fv*100)+'%':'—')+'</span>'+
+      '<span style="color:var(--dim);font-size:10px">'+favName.split(' ').pop()+'</span>'+
+      '<span style="color:var(--dim);margin:0 4px">vs</span>'+
+      '<span class="sr-val '+dogCls+'">'+(dv!==null?Math.round(dv*100)+'%':'—')+'</span>'+
+      '<span style="color:var(--dim);font-size:10px">'+dogName.split(' ').pop()+'</span>'+
+    '</div>'+
+  '</div>';
+}
+
+function renderSR(){
+  const m=DATA.matches.find(x=>x.event_id===AG); if(!m)return;
+  let h='<div class="sr-wrap"><div class="sr-grid">'+
+    '<div class="sr-col">'+
+      '<h4>'+m.fav_name+' Serve vs '+m.dog_name+' Return</h4>'+
+      srStat('1st Serve In', m.fav_proj_1stIn_pct, null, m.fav_name, m.dog_name)+
+      srStat('1st Serve Won', m.fav_proj_1stWon_pct, m.dog_proj_ret_won_pct, m.fav_name, m.dog_name)+
+      srStat('2nd Serve Won', m.fav_proj_2ndWon_pct, null, m.fav_name, m.dog_name)+
+    '</div>'+
+    '<div class="sr-col">'+
+      '<h4>'+m.dog_name+' Serve vs '+m.fav_name+' Return</h4>'+
+      srStat('1st Serve In', m.dog_proj_1stIn_pct, null, m.dog_name, m.fav_name)+
+      srStat('1st Serve Won', m.dog_proj_1stWon_pct, m.fav_proj_ret_won_pct, m.dog_name, m.fav_name)+
+      srStat('2nd Serve Won', m.dog_proj_2ndWon_pct, null, m.dog_name, m.fav_name)+
+    '</div>'+
+  '</div></div>';
+  document.getElementById('pane-sr').innerHTML=h;
+}
 </script>
 </body>
 </html>
