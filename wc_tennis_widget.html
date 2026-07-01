@@ -34,7 +34,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .brand-left{display:flex;align-items:center;gap:9px}
 .brand-logo{height:22px;width:auto;display:block}
 .brand-logo-fallback{height:22px;padding:0 10px;border-radius:5px;background:var(--court);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--wh);letter-spacing:.5px}
-.brand-sub{font-size:9px;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;font-weight:700}
+.brand-sub{font-size:9px;color:var(--ball);letter-spacing:1.5px;text-transform:uppercase;font-weight:800}
 
 .view-toggle{background:var(--bg2);border-bottom:1px solid var(--bd);padding:9px 16px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .vbtn{font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:6px 14px;background:var(--bg3);color:var(--sub);border:1px solid var(--bd2);cursor:pointer;border-radius:3px;transition:.15s}
@@ -54,8 +54,8 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 /* ── LANDING: ALL GRADED MATCHES ── */
 .landing-wrap{padding:14px 16px}
 .landing-hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
-.landing-title{font-size:15px;font-weight:800;color:var(--wh);letter-spacing:-.1px}
-.landing-count{font-size:11px;color:var(--sub)}
+.landing-title{font-size:15px;font-weight:800;color:var(--ball);letter-spacing:-.1px}
+.landing-count{font-size:11px;color:#4ade80;font-weight:700;background:var(--court-dim);padding:2px 8px;border-radius:10px}
 
 .match-card{background:var(--bg2);border:1px solid var(--bd);border-radius:6px;margin-bottom:8px;overflow:hidden;cursor:pointer;transition:.15s}
 .match-card:hover{border-color:var(--bd2)}
@@ -78,14 +78,16 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .landing-empty{text-align:center;color:var(--dim);padding:40px 0;font-size:12px}
 
 .bbflat-list{display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:6px;overflow:hidden}
-.bbflat-row{display:grid;grid-template-columns:64px 1fr auto auto auto auto;gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--bd);cursor:pointer;background:var(--bg2);transition:.1s;opacity:.55}
-.bbflat-row.qual{opacity:1;background:var(--bg2)}
-.bbflat-row.qual .bbflat-side{color:var(--ball)}
+.bbflat-row{display:grid;grid-template-columns:64px 1fr auto auto auto auto;gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--bd);cursor:pointer;background:var(--bg2);transition:.1s;opacity:.6}
+.bbflat-row.qual{opacity:1}
 .bbflat-row:last-child{border-bottom:none}
 .bbflat-row:hover{background:var(--bg3);opacity:1}
-.bbflat-mkt{font-size:10px;font-weight:700;letter-spacing:.2px;color:var(--sub);background:var(--bg4);border:1px solid var(--bd2);border-radius:3px;padding:4px 6px;text-align:center}
+.bbflat-mkt{font-size:10px;font-weight:800;letter-spacing:.3px;border-radius:3px;padding:4px 7px;text-align:center}
+.mkt-ml{color:#5eb8ff;background:#071a2c;border:1px solid #1a4a80}
+.mkt-spread{color:#ffb84d;background:#2a1a05;border:1px solid #7a5218}
+.mkt-total{color:#c98cf0;background:#1f0a2a;border:1px solid #5e2e6e}
 .bbflat-main{display:flex;flex-direction:column;gap:1px;min-width:0}
-.bbflat-side{font-size:13px;font-weight:700;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bbflat-side{font-size:13px;font-weight:800;color:var(--ball);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bbflat-match{font-size:10px;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bbflat-odds{font-size:12.5px;font-weight:700;color:var(--txt);text-align:right;min-width:44px}
 .bbflat-edge{font-size:12px;font-weight:800;text-align:right;min-width:64px;padding:3px 8px;border-radius:3px;white-space:nowrap}
@@ -96,9 +98,9 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .book-chip{font-size:9px;font-weight:700;padding:3px 7px;border-radius:3px;white-space:nowrap}
 .grade-badge{font-size:11px;font-weight:900;padding:3px 8px;border-radius:3px;text-align:center;min-width:28px;background:var(--bg4);color:var(--txt);border:1px solid var(--bd2)}
 .grade-Aplus,.grade-A{background:var(--gbg);color:#4ade80;border:1px solid var(--gbd)}
-.grade-Bplus,.grade-B{background:var(--neutralbg);color:var(--txt);border:1px solid var(--bd2)}
+.grade-Bplus,.grade-B{background:#1c1300;color:var(--ball);border:1px solid #6e5a0e}
 .grade-Cplus,.grade-C{background:var(--bg3);color:var(--sub);border:1px solid var(--bd)}
-.grade-D{background:var(--bg3);color:var(--dim);border:1px solid var(--bd)}
+.grade-D{background:var(--rbg);color:#f87171;border:1px solid var(--rbd)}
 
 @media(max-width:560px){
   .bbflat-row{grid-template-columns:1fr auto;grid-template-areas:"main edge" "mkt odds" "book grade"}
@@ -135,13 +137,12 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 /* Elo visualization */
 .elo-viz{margin-top:10px;display:flex;flex-direction:column;gap:5px}
 .elo-viz.r{align-items:flex-end}
-.elo-viz-hdr{font-size:8px;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:1px}
+.elo-viz-hdr{font-size:8px;color:var(--sub);text-transform:uppercase;letter-spacing:.6px;font-weight:800;margin-bottom:1px}
 .elo-row{display:flex;align-items:center;gap:6px;width:100%}
-.elo-viz.r .elo-row{flex-direction:row-reverse}
-.elo-lbl{font-size:8.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.3px;min-width:38px}
+.elo-lbl{font-size:8.5px;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;min-width:38px;font-weight:700}
 .elo-track{flex:1;max-width:110px;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden}
 .elo-fill{height:100%;border-radius:3px}
-.elo-pct{font-size:10px;color:var(--sub);min-width:28px;text-align:right;font-variant-numeric:tabular-nums}
+.elo-pct{font-size:10.5px;font-weight:800;min-width:28px;text-align:right;font-variant-numeric:tabular-nums}
 
 /* ── TABS ── */
 .tab-bar{background:var(--bg2);border-bottom:1px solid var(--bd);display:flex;padding:0 16px}
@@ -152,12 +153,12 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 
 /* ── BEST BETS / GRADES (match-level ranked list, ALWAYS shown) ── */
 .bb-match-wrap{padding:14px 16px;border-bottom:1px solid var(--bd)}
-.bb-match-hdr{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.bb-match-hdr{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--ball);margin-bottom:10px;padding-left:8px;border-left:3px solid var(--ball)}
 .bbm-row{display:grid;grid-template-columns:auto 1fr auto auto auto auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--bg3)}
 .bbm-row:last-child{border-bottom:none}
 .bbm-rank{font-size:13px;font-weight:900;color:var(--dim);min-width:18px}
 .bbm-row.qual .bbm-rank{color:var(--ball)}
-.bbm-side{font-size:13.5px;font-weight:700;color:var(--wh)}
+.bbm-side{font-size:13.5px;font-weight:800;color:var(--ball)}
 .bbm-vs{font-size:10px;color:var(--dim);margin-left:6px}
 .bbm-odds{font-size:13px;font-weight:700;color:var(--sub)}
 .bbm-edge{font-size:11px;font-weight:800;padding:3px 8px;border-radius:3px}
@@ -166,7 +167,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .bbm-edge.lo{color:var(--dim);background:var(--bg3);border:1px solid var(--bd)}
 
 /* ── BOX SCORE ── */
-.pt-hdr{padding:8px 16px;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--sub);background:var(--bg2);border-bottom:1px solid var(--bd);border-top:1px solid var(--bd)}
+.pt-hdr{padding:8px 16px;font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--clay);background:var(--bg2);border-bottom:1px solid var(--bd);border-top:1px solid var(--bd)}
 .pt{width:100%;border-collapse:collapse}
 .pt th{font-size:9px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--dim);padding:8px 5px;text-align:right;border-bottom:1px solid var(--bd2);background:var(--bg2);white-space:nowrap}
 .pt th:first-child{text-align:left;padding-left:16px;min-width:140px}
@@ -183,14 +184,14 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 
 /* ── MATCHUP CHART (percentile-based) ── */
 .mc-wrap{padding:16px}
-.mc-hdr{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
-.mc-subhdr{font-size:10px;color:var(--dim);margin-bottom:12px;font-style:italic}
+.mc-hdr{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--ball);margin-bottom:4px}
+.mc-subhdr{font-size:10px;color:var(--sub);margin-bottom:12px;font-style:italic}
 .mc-table{width:100%;border-collapse:collapse}
 .mc-table th{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--dim);padding:6px 4px;text-align:center}
 .mc-table th.lbl{text-align:left;padding-left:4px}
 .mc-row{border-top:1px solid var(--bg3)}
 .mc-row td{padding:9px 4px;vertical-align:middle}
-.mc-label{font-size:11px;color:var(--sub);font-weight:600;text-transform:uppercase;letter-spacing:.3px;padding-left:4px!important}
+.mc-label{font-size:11px;color:var(--txt);font-weight:700;text-transform:uppercase;letter-spacing:.3px;padding-left:4px!important}
 .mc-val{text-align:center;font-size:13px;font-weight:800;padding:5px 10px;border-radius:3px;min-width:56px;display:inline-block}
 .mc-cell{text-align:center}
 .mc-samplewarn{font-size:8px;color:var(--a);font-weight:700;text-transform:uppercase;letter-spacing:.3px;display:block;margin-top:2px}
@@ -309,6 +310,7 @@ function pctileCls(v){
 }
 
 const MKT_LABEL={'Moneyline':'Moneyline','Games Spread':'Spread','Total Games':'Total'};
+const MKT_CLS={'Moneyline':'mkt-ml','Games Spread':'mkt-spread','Total Games':'mkt-total'};
 
 let DATA={matches:[],bets:[]};
 let AG=null, AT='ov', TOURFILTER='ALL', VIEW='landing', SOON_ONLY=false;
@@ -456,7 +458,7 @@ function bestBetRowHtml(bet, m, qualifies){
   const matchLabel = m ? (lastName(m.fav_name)+' vs '+lastName(m.dog_name)) : '';
   const timeLabel = m ? fmtMatchTime(m.scheduled_date) : '';
   return '<div class="bbflat-row'+(qualifies?' qual':'')+'" data-eid="'+bet.event_id+'">'+
-    '<span class="bbflat-mkt">'+(MKT_LABEL[bet.market]||bet.market)+'</span>'+
+    '<span class="bbflat-mkt '+(MKT_CLS[bet.market]||'')+'">'+(MKT_LABEL[bet.market]||bet.market)+'</span>'+
     '<div class="bbflat-main">'+
       '<span class="bbflat-side">'+bet.pick_side+'</span>'+
       '<span class="bbflat-match">'+matchLabel+(timeLabel?' '+String.fromCharCode(183)+' '+timeLabel:'')+'</span>'+
@@ -535,8 +537,8 @@ function eloVizBlock(overallPctile, surfacePctile, alignRight){
   const svp = num(surfacePctile);
   return '<div class="elo-viz'+(alignRight?' r':'')+'">'+
     '<div class="elo-viz-hdr">Elo Percentile</div>'+
-    '<div class="elo-row"><span class="elo-lbl">Overall</span><span class="elo-track"><span class="elo-fill" style="width:'+(ovp!==null?ovp:0)+'%;background:'+eloFillColor(ovp)+'"></span></span><span class="elo-pct mono">'+(ovp!==null?Math.round(ovp)+'th':String.fromCharCode(8212))+'</span></div>'+
-    '<div class="elo-row"><span class="elo-lbl">Surface</span><span class="elo-track"><span class="elo-fill" style="width:'+(svp!==null?svp:0)+'%;background:'+eloFillColor(svp)+'"></span></span><span class="elo-pct mono">'+(svp!==null?Math.round(svp)+'th':String.fromCharCode(8212))+'</span></div>'+
+    '<div class="elo-row"><span class="elo-lbl">Overall</span><span class="elo-track"><span class="elo-fill" style="width:'+(ovp!==null?ovp:0)+'%;background:'+eloFillColor(ovp)+'"></span></span><span class="elo-pct mono" style="color:'+eloFillColor(ovp)+'">'+(ovp!==null?Math.round(ovp)+'th':String.fromCharCode(8212))+'</span></div>'+
+    '<div class="elo-row"><span class="elo-lbl">Surface</span><span class="elo-track"><span class="elo-fill" style="width:'+(svp!==null?svp:0)+'%;background:'+eloFillColor(svp)+'"></span></span><span class="elo-pct mono" style="color:'+eloFillColor(svp)+'">'+(svp!==null?Math.round(svp)+'th':String.fromCharCode(8212))+'</span></div>'+
   '</div>';
 }
 
@@ -589,7 +591,7 @@ function bbmRow(rank, bet, qualifies){
   }
   return '<div class="bbm-row'+(qualifies?' qual':'')+'">'+
     '<div class="bbm-rank">'+rank+'</div>'+
-    '<div><span class="bb-mkt-tag" style="margin-right:8px;font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 8px;border-radius:10px;background:var(--bg4);color:var(--sub);border:1px solid var(--bd2)">'+bet.market+'</span><span class="bbm-side">'+bet.pick_side+'</span><div class="bbm-vs">'+vsInfo+'</div></div>'+
+    '<div><span class="bb-mkt-tag '+(MKT_CLS[bet.market]||'')+'" style="margin-right:8px;font-size:9px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:3px 8px;border-radius:10px">'+(MKT_LABEL[bet.market]||bet.market)+'</span><span class="bbm-side">'+bet.pick_side+'</span><div class="bbm-vs">'+vsInfo+'</div></div>'+
     '<span class="bbm-odds mono">'+fmtOdds(bet.pick_odds)+'</span>'+
     bookChip(bet.pick_book)+
     gradeBadge(bet.grade)+
