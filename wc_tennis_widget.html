@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <title>Tennis Matchups</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -26,16 +26,16 @@
   --neutral:#3a4150; --neutralbg:#0c0e12;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-serif;font-size:13px;line-height:1.4;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-serif;font-size:13px;line-height:1.4;-webkit-font-smoothing:antialiased;padding-bottom:max(24px, env(safe-area-inset-bottom))}
 .mono{font-family:'Space Mono',monospace;font-variant-numeric:tabular-nums}
 
 /* ── BRAND HEADER (logo slot) ── */
-.brand-bar{background:var(--bg2);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd)}
-.brand-left{display:flex;align-items:center;gap:9px}
+.brand-bar{background:var(--bg2);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);flex-wrap:wrap;gap:6px 14px}
+.brand-left{display:flex;align-items:center;gap:9px;min-width:0}
 .brand-logo{height:22px;width:auto;display:block}
-.brand-logo-fallback{height:22px;padding:0 10px;border-radius:5px;background:var(--court);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--wh);letter-spacing:.5px}
-.brand-sub{font-size:9px;color:var(--ball);letter-spacing:1.5px;text-transform:uppercase;font-weight:800}
-.last-updated{font-size:9px;color:var(--sub);letter-spacing:.3px;font-variant-numeric:tabular-nums}
+.brand-logo-fallback{height:22px;padding:0 10px;border-radius:5px;background:var(--court);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--wh);letter-spacing:.5px;flex-shrink:0}
+.brand-sub{font-size:9px;color:var(--ball);letter-spacing:1.5px;text-transform:uppercase;font-weight:800;white-space:nowrap}
+.last-updated{font-size:9px;color:var(--sub);letter-spacing:.3px;font-variant-numeric:tabular-nums;white-space:nowrap;margin-left:auto}
 
 .view-toggle{background:var(--bg2);border-bottom:1px solid var(--bd);padding:9px 16px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .vbtn{font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:6px 14px;background:var(--bg3);color:var(--sub);border:1px solid var(--bd2);cursor:pointer;border-radius:3px;transition:.15s}
@@ -78,8 +78,14 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .grade-chip.lo{background:var(--bg3);color:var(--dim);border:1px solid var(--bd)}
 .landing-empty{text-align:center;color:var(--dim);padding:40px 0;font-size:12px}
 
+.landing-hdr-right{display:flex;align-items:center;gap:10px}
+
+.ge-toggle{display:flex;border:1px solid var(--bd2);border-radius:12px;overflow:hidden}
+.ge-btn{font-size:9.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;padding:4px 10px;background:var(--bg3);color:var(--sub);border:none;cursor:pointer}
+.ge-btn.on{background:var(--court);color:var(--wh)}
+
 .bbflat-list{display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:6px;overflow:hidden}
-.bbflat-row{display:grid;grid-template-columns:64px 1fr auto auto auto auto;gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--bd);cursor:pointer;background:var(--bg2);transition:.1s}
+.bbflat-row{display:grid;grid-template-columns:60px 1fr auto auto;gap:8px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--bd);cursor:pointer;background:var(--bg2);transition:.1s}
 .bbflat-row:last-child{border-bottom:none}
 .bbflat-row:hover{background:var(--bg3)}
 .bbflat-mkt{font-size:10px;font-weight:800;letter-spacing:.3px;border-radius:3px;padding:4px 7px;text-align:center}
@@ -89,27 +95,28 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .bbflat-main{display:flex;flex-direction:column;gap:1px;min-width:0}
 .bbflat-side{font-size:13px;font-weight:800;color:var(--ball);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bbflat-match{font-size:10px;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bbflat-odds{font-size:12.5px;font-weight:700;color:var(--txt);text-align:right;min-width:44px}
-.bbflat-edge{font-size:12px;font-weight:800;text-align:right;min-width:64px;padding:3px 8px;border-radius:3px;white-space:nowrap}
-.bbflat-edge.hi{color:#4ade80;background:var(--gbg)}
-.bbflat-edge.md{color:var(--txt);background:var(--neutralbg)}
-.bbflat-edge.lo{color:var(--sub);background:var(--bg3)}
 
-.book-chip{font-size:9px;font-weight:700;padding:3px 7px;border-radius:3px;white-space:nowrap}
-.grade-badge{font-size:11px;font-weight:900;padding:3px 8px;border-radius:3px;text-align:center;min-width:28px;background:var(--bg4);color:var(--txt);border:1px solid var(--bd2)}
+/* Combined book-logo + odds box */
+.bbflat-oddsbox{display:flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--bd2);border-radius:4px;padding:4px 8px;white-space:nowrap;font-size:12px;font-weight:700;color:var(--txt)}
+.bbflat-booklogo{height:14px;width:auto;max-width:36px;object-fit:contain;display:block}
+.bbflat-booklogo-fallback{font-size:8px;font-weight:800;color:var(--sub);letter-spacing:.2px}
+
+/* Grade/Edge toggling box (single element, content swaps with GE_MODE) */
+.bbflat-ge{display:inline-flex;align-items:center;justify-content:center;min-width:44px;padding:5px 9px;border-radius:4px;font-size:12px;font-weight:900;text-align:center;background:var(--bg4);color:var(--txt);border:1px solid var(--bd2)}
+.bbflat-ge.hi{color:#4ade80;background:var(--gbg);border-color:var(--gbd)}
+.bbflat-ge.md{color:var(--txt);background:var(--neutralbg)}
+.bbflat-ge.lo{color:var(--sub);background:var(--bg3)}
 .grade-Aplus,.grade-A{background:var(--gbg);color:#4ade80;border:1px solid var(--gbd)}
 .grade-Bplus,.grade-B{background:#1c1300;color:var(--ball);border:1px solid #6e5a0e}
 .grade-Cplus,.grade-C{background:var(--bg3);color:var(--sub);border:1px solid var(--bd)}
 .grade-D{background:var(--rbg);color:#f87171;border:1px solid var(--rbd)}
 
 @media(max-width:560px){
-  .bbflat-row{grid-template-columns:1fr auto;grid-template-areas:"main edge" "mkt odds" "book grade"}
+  .bbflat-row{grid-template-columns:1fr auto;grid-template-areas:"main ge" "mkt odds"}
   .bbflat-mkt{grid-area:mkt}
   .bbflat-main{grid-area:main}
-  .bbflat-edge{grid-area:edge}
-  .bbflat-odds{grid-area:odds;text-align:left}
-  .book-chip{grid-area:book}
-  .grade-badge{grid-area:grade}
+  .bbflat-ge{grid-area:ge}
+  .bbflat-oddsbox{grid-area:odds;justify-self:start}
 }
 
 /* ── MATCH HEADER ── */
@@ -140,9 +147,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .elo-viz-hdr{font-size:8px;color:var(--sub);text-transform:uppercase;letter-spacing:.6px;font-weight:800;margin-bottom:1px}
 .elo-row{display:flex;align-items:center;gap:6px;width:100%}
 .elo-lbl{font-size:8.5px;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;min-width:38px;font-weight:700}
-.elo-track{flex:1;max-width:110px;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden}
-.elo-fill{display:block;height:100%;border-radius:3px}
-.elo-pct{font-size:10.5px;font-weight:800;min-width:60px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.elo-pct{font-size:11px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
 .elo-pool{font-weight:600;color:var(--sub);font-size:9px}
 .elo-nr-note{font-weight:600;font-style:italic;font-size:8.5px;letter-spacing:0}
 
@@ -156,17 +161,14 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 /* ── BEST BETS / GRADES (match-level ranked list, ALWAYS shown) ── */
 .bb-match-wrap{padding:14px 16px;border-bottom:1px solid var(--bd)}
 .bb-match-hdr{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--ball);margin-bottom:10px;padding-left:8px;border-left:3px solid var(--ball)}
-.bbm-row{display:grid;grid-template-columns:auto 1fr auto auto auto auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--bg3)}
+.bb-match-hdr-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.bb-match-hdr-row .bb-match-hdr{margin-bottom:0}
+.bbm-row{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--bg3)}
 .bbm-row:last-child{border-bottom:none}
 .bbm-rank{font-size:13px;font-weight:900;color:var(--dim);min-width:18px}
 .bbm-row.qual .bbm-rank{color:var(--ball)}
 .bbm-side{font-size:13.5px;font-weight:800;color:var(--ball)}
 .bbm-vs{font-size:10px;color:var(--dim);margin-left:6px}
-.bbm-odds{font-size:13px;font-weight:700;color:var(--sub)}
-.bbm-edge{font-size:11px;font-weight:800;padding:3px 8px;border-radius:3px}
-.bbm-edge.hi{color:var(--g);background:var(--gbg);border:1px solid var(--gbd)}
-.bbm-edge.md{color:var(--sub);background:var(--neutralbg);border:1px solid var(--bd2)}
-.bbm-edge.lo{color:var(--dim);background:var(--bg3);border:1px solid var(--bd)}
 
 /* ── BOX SCORE ── */
 .pt-hdr{padding:8px 16px;font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--clay);background:var(--bg2);border-bottom:1px solid var(--bd);border-top:1px solid var(--bd)}
@@ -215,6 +217,39 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
   .match-select select{width:100%}
   .mc-table{font-size:11px}
   .soon-toggle{margin-left:0;width:100%}
+
+  /* Brand bar: stack cleanly instead of cramming 3 items on one line */
+  .brand-bar{padding:8px 12px}
+  .brand-sub{display:none}
+  .last-updated{font-size:8px;flex-basis:100%;margin-left:0;order:3}
+
+  .view-toggle{padding:8px 12px}
+  .filter-bar{padding:6px 12px}
+  .landing-wrap{padding:10px 12px}
+  .game-hdr{padding:12px}
+  .bb-match-wrap{padding:10px 12px}
+  .mc-wrap{padding:12px}
+
+  /* Game header: shrink so both players + center box fit without squeezing */
+  .gh-grid{gap:4px}
+  .gh-name{font-size:13px}
+  .gh-ml{font-size:13px}
+  .gh-ou-box{padding:5px 10px;font-size:14px}
+  .gh-prob{font-size:9.5px}
+  .elo-lbl{min-width:32px;font-size:7.5px}
+  .elo-pct{font-size:9.5px}
+  .elo-viz-hdr{font-size:7px}
+
+  /* Header rows with a toggle control: let them wrap instead of overflowing */
+  .landing-hdr{flex-wrap:wrap;gap:8px}
+  .landing-hdr-right{flex-wrap:wrap}
+  .bb-match-hdr-row{flex-wrap:wrap}
+}
+@media(max-width:380px){
+  .gh-grid{grid-template-columns:1fr auto 1fr}
+  .gh-name{font-size:11.5px}
+  .gh-ml{font-size:12px}
+  .elo-lbl{min-width:28px}
 }
 </style>
 </head>
@@ -318,6 +353,29 @@ const MKT_CLS={'Moneyline':'mkt-ml','Games Spread':'mkt-spread','Total Games':'m
 
 let DATA={matches:[],bets:[]};
 let AG=null, AT='ov', TOURFILTER='ALL', VIEW='landing', SOON_ONLY=false;
+let GE_MODE='grade'; // global toggle: 'grade' or 'edge', shared by Best Bets landing + Match View list
+
+function setGEMode(mode, btn){
+  GE_MODE = mode;
+  document.querySelectorAll('.ge-toggle .ge-btn').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('.ge-toggle .ge-btn[data-mode="'+mode+'"]').forEach(function(b){b.classList.add('on');});
+  if(VIEW==='landing') renderBestBetsLanding();
+  else if(VIEW==='match' && AT==='ov') renderOV();
+}
+function geToggleHtml(){
+  return '<div class="ge-toggle">'+
+    '<button class="ge-btn'+(GE_MODE==='grade'?' on':'')+'" data-mode="grade" onclick="setGEMode(\'grade\',this)">Grade</button>'+
+    '<button class="ge-btn'+(GE_MODE==='edge'?' on':'')+'" data-mode="edge" onclick="setGEMode(\'edge\',this)">Edge</button>'+
+  '</div>';
+}
+function geBoxHtml(bet, cls){
+  if(GE_MODE==='edge'){
+    const edgeVal = num(bet.edge)||0;
+    return '<span class="bbflat-ge mono '+edgeColorCls(edgeVal,0.05)+'">'+(edgeVal*100).toFixed(1)+'%</span>';
+  }
+  if(!bet.grade) return '<span class="bbflat-ge">'+String.fromCharCode(8212)+'</span>';
+  return '<span class="bbflat-ge grade-'+bet.grade.replace('+','plus')+'">'+bet.grade+'</span>';
+}
 
 async function boot(){
   try{
@@ -441,29 +499,26 @@ function edgeColorCls(edgeVal, threshold){
   return 'lo';
 }
 
-const BOOK_COLORS={
-  'DraftKings':  {bg:'#0a2a0d', fg:'#53d769', bd:'#1d6e2f'},
-  'FanDuel':     {bg:'#0a1530', fg:'#3d7eff', bd:'#1a3d8f'},
-  'BetMGM':      {bg:'#2a1a05', fg:'#d4a017', bd:'#7a5c0f'},
-  'Caesars':     {bg:'#1f1505', fg:'#c9a227', bd:'#6b551a'},
-  'SportingBet': {bg:'#1a0a1f', fg:'#b366d9', bd:'#5e2e6e'},
-  'BetanoUK':    {bg:'#2a0a0a', fg:'#ff5c5c', bd:'#7a1d1d'},
-  'BetanoBR':    {bg:'#2a0a0a', fg:'#ff8a5c', bd:'#7a3a1d'},
+const BOOK_LOGOS={
+  'DraftKings':  'https://assets.actionnetwork.com/603379_Primary.png',
+  'FanDuel':     'https://assets.actionnetwork.com/392973_FanDuel.png',
+  'BetMGM':      'https://assets.actionnetwork.com/607000_Primary.png',
+  'Caesars':     'https://assets.actionnetwork.com/463646_Caesars.png',
+  'SportingBet': 'https://assets.actionnetwork.com/450526_460x0w4.png',
+  'BetanoUK':    'https://assets.actionnetwork.com/308616_Primary.png',
+  'BetanoBR':    'https://assets.actionnetwork.com/308616_Primary.png',
 };
-function bookChip(book){
+function bookLogoImg(book, cls){
   if(!book) return '';
-  const c = BOOK_COLORS[book] || {bg:'var(--bg4)', fg:'var(--sub)', bd:'var(--bd2)'};
-  return '<span class="book-chip" style="background:'+c.bg+';color:'+c.fg+';border:1px solid '+c.bd+'">'+book+'</span>';
-}
-
-function gradeBadge(grade){
-  if(!grade) return '';
-  return '<span class="grade-badge grade-'+grade.replace('+','plus')+'">'+grade+'</span>';
+  const src = BOOK_LOGOS[book];
+  if(!src) return '<span class="'+cls+'-fallback">'+book+'</span>';
+  // onerror falls back to the plain book name if the logo ever 404s, so a
+  // dead image link never leaves a blank box.
+  return '<img class="'+cls+'" src="'+src+'" alt="'+book+'" title="'+book+'" '+
+    'onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{className:\''+cls+'-fallback\',textContent:\''+book+'\'}))">';
 }
 
 function bestBetRowHtml(bet, m){
-  const edgeVal = num(bet.edge)||0;
-  const cls = edgeColorCls(edgeVal, 0.05);
   const matchLabel = m ? (lastName(m.fav_name)+' vs '+lastName(m.dog_name)) : '';
   const timeLabel = m ? fmtMatchTime(m.scheduled_date) : '';
   return '<div class="bbflat-row" data-eid="'+bet.event_id+'">'+
@@ -472,10 +527,8 @@ function bestBetRowHtml(bet, m){
       '<span class="bbflat-side">'+bet.pick_side+'</span>'+
       '<span class="bbflat-match">'+matchLabel+(timeLabel?' '+String.fromCharCode(183)+' '+timeLabel:'')+'</span>'+
     '</div>'+
-    '<span class="bbflat-odds mono">'+fmtOdds(bet.pick_odds)+'</span>'+
-    bookChip(bet.pick_book)+
-    gradeBadge(bet.grade)+
-    '<span class="bbflat-edge mono '+cls+'">'+(edgeVal*100).toFixed(1)+'% edge</span>'+
+    '<span class="bbflat-oddsbox">'+bookLogoImg(bet.pick_book,'bbflat-booklogo')+'<span class="mono">'+fmtOdds(bet.pick_odds)+'</span></span>'+
+    geBoxHtml(bet)+
   '</div>';
 }
 
@@ -496,7 +549,7 @@ function renderBestBetsLanding(){
     return;
   }
 
-  let h='<div class="landing-wrap"><div class="landing-hdr"><div class="landing-title">Best Bets</div><div class="landing-count">'+allBets.length+' evaluations</div></div>';
+  let h='<div class="landing-wrap"><div class="landing-hdr"><div class="landing-title">Best Bets</div><div class="landing-hdr-right">'+geToggleHtml()+'<div class="landing-count">'+allBets.length+' evaluations</div></div></div>';
   h += '<div class="bbflat-list">';
   allBets.forEach(function(b){ h += bestBetRowHtml(b, visibleIds[b.event_id]); });
   h += '</div></div>';
@@ -532,24 +585,20 @@ function render(){
   if(AT==='mc') renderMC();
 }
 
-function eloFillColor(pctileEquiv){
-  if(pctileEquiv===null) return 'var(--dim)';
-  if(pctileEquiv>=65) return 'var(--g)';
-  if(pctileEquiv<=35) return 'var(--r)';
-  return 'var(--sub)';
-}
-
 function eloVizBlock(overallRank, overallQualified, surfaceRank, surfaceQualified, poolSize, alignRight){
+  function textColor(rank, qualified){
+    if(!qualified || rank===null || !poolSize) return 'var(--dim)';
+    const frac = (poolSize - rank + 1) / poolSize;
+    if(frac>=0.65) return 'var(--g)';
+    if(frac<=0.35) return 'var(--r)';
+    return 'var(--sub)';
+  }
   function rowHtml(label, rank, qualified){
     if(rank===null || !qualified){
       const note = (rank!==null) ? 'small sample' : String.fromCharCode(8212);
-      return '<div class="elo-row"><span class="elo-lbl">'+label+'</span><span class="elo-track"><span class="elo-fill" style="width:0%;background:var(--bg4)"></span></span><span class="elo-pct mono" style="color:var(--dim)">NR<span class="elo-nr-note"> ('+note+')</span></span></div>';
+      return '<div class="elo-row"><span class="elo-lbl">'+label+'</span><span class="elo-pct mono" style="color:var(--dim)">NR<span class="elo-nr-note"> ('+note+')</span></span></div>';
     }
-    // Convert rank -> an equivalent fill ratio purely for the bar visual;
-    // the number shown is the rank itself, not a percentile.
-    const fillPct = poolSize ? (poolSize - rank + 1) / poolSize * 100 : 0;
-    const color = eloFillColor(fillPct);
-    return '<div class="elo-row"><span class="elo-lbl">'+label+'</span><span class="elo-track"><span class="elo-fill" style="width:'+fillPct+'%;background:'+color+'"></span></span><span class="elo-pct mono" style="color:'+color+'">#'+rank+(poolSize?'<span class="elo-pool"> / '+poolSize+'</span>':'')+'</span></div>';
+    return '<div class="elo-row"><span class="elo-lbl">'+label+'</span><span class="elo-pct mono" style="color:'+textColor(rank,qualified)+'">#'+rank+(poolSize?'<span class="elo-pool"> / '+poolSize+'</span>':'')+'</span></div>';
   }
   return '<div class="elo-viz'+(alignRight?' r':'')+'">'+
     '<div class="elo-viz-hdr">Elo Rank</div>'+
@@ -598,9 +647,6 @@ function renderHdr(){
 }
 
 function bbmRow(rank, bet, qualifies){
-  const edgeVal = num(bet.edge)||0;
-  const edgeStr = (edgeVal*100).toFixed(1)+'% edge';
-  const cls = edgeColorCls(edgeVal, 0.05);
   let vsInfo = '';
   if(bet.market==='Moneyline'){
     vsInfo = lastName(bet.fav_name)+' '+fmtOdds(bet.fav_odds)+' / '+lastName(bet.dog_name)+' '+fmtOdds(bet.dog_odds);
@@ -612,10 +658,8 @@ function bbmRow(rank, bet, qualifies){
   return '<div class="bbm-row'+(qualifies?' qual':'')+'">'+
     '<div class="bbm-rank">'+rank+'</div>'+
     '<div><span class="bb-mkt-tag '+(MKT_CLS[bet.market]||'')+'" style="margin-right:8px;font-size:9px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:3px 8px;border-radius:10px">'+(MKT_LABEL[bet.market]||bet.market)+'</span><span class="bbm-side">'+bet.pick_side+'</span><div class="bbm-vs">'+vsInfo+'</div></div>'+
-    '<span class="bbm-odds mono">'+fmtOdds(bet.pick_odds)+'</span>'+
-    bookChip(bet.pick_book)+
-    gradeBadge(bet.grade)+
-    '<span class="bbm-edge '+cls+'">'+edgeStr+'</span>'+
+    '<span class="bbflat-oddsbox">'+bookLogoImg(bet.pick_book,'bbflat-booklogo')+'<span class="mono">'+fmtOdds(bet.pick_odds)+'</span></span>'+
+    geBoxHtml(bet)+
   '</div>';
 }
 
@@ -625,7 +669,7 @@ function renderOV(){
   const m = matches[0];
   const allBets = betsForMatch(AG).slice().sort(function(a,b){return (num(b.edge)||0)-(num(a.edge)||0);});
 
-  let h='<div class="bb-match-wrap"><div class="bb-match-hdr">Market Grades — All Tracked Markets</div>';
+  let h='<div class="bb-match-wrap"><div class="bb-match-hdr-row"><div class="bb-match-hdr">Market Grades — All Tracked Markets</div>'+geToggleHtml()+'</div>';
   if(allBets.length){
     allBets.forEach(function(b,i){ h+=bbmRow(i+1,b,isTrue(b.meets_threshold)); });
   } else {
