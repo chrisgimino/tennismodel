@@ -86,10 +86,10 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .ge-btn.on{background:var(--court);color:var(--wh)}
 
 .bbflat-list{display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:6px;overflow:hidden}
-.bbflat-row{display:grid;grid-template-columns:60px 1fr auto auto;gap:8px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--bd);cursor:pointer;background:var(--bg2);transition:.1s}
+.bbflat-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--bd);cursor:pointer;background:var(--bg2);transition:.1s}
 .bbflat-row:last-child{border-bottom:none}
 .bbflat-row:hover{background:var(--bg3)}
-.bbflat-mkt{font-size:10px;font-weight:800;letter-spacing:.3px;border-radius:3px;padding:4px 7px;text-align:center}
+.bbflat-mkt-inline{align-self:flex-start;font-size:8.5px;font-weight:800;letter-spacing:.3px;border-radius:3px;padding:2px 6px;margin-bottom:2px;display:inline-block}
 .mkt-ml{color:#5eb8ff;background:#071a2c;border:1px solid #1a4a80}
 .mkt-spread{color:#ffb84d;background:#2a1a05;border:1px solid #7a5218}
 .mkt-total{color:#c98cf0;background:#1f0a2a;border:1px solid #5e2e6e}
@@ -113,10 +113,9 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .grade-D{background:var(--rbg);color:#f87171;border:1px solid var(--rbd)}
 
 @media(max-width:560px){
-  .bbflat-row{grid-template-columns:1fr auto;grid-template-areas:"main ge" "mkt odds"}
-  .bbflat-mkt{grid-area:mkt}
+  .bbflat-row{grid-template-columns:1fr auto;grid-template-areas:"main main" "odds ge"}
   .bbflat-main{grid-area:main}
-  .bbflat-ge{grid-area:ge}
+  .bbflat-ge{grid-area:ge;justify-self:end}
   .bbflat-oddsbox{grid-area:odds;justify-self:start}
 }
 
@@ -523,8 +522,8 @@ function bestBetRowHtml(bet, m){
   const matchLabel = m ? (lastName(m.fav_name)+' vs '+lastName(m.dog_name)) : '';
   const timeLabel = m ? fmtMatchTime(m.scheduled_date) : '';
   return '<div class="bbflat-row" data-eid="'+bet.event_id+'">'+
-    '<span class="bbflat-mkt '+(MKT_CLS[bet.market]||'')+'">'+(MKT_LABEL[bet.market]||bet.market)+'</span>'+
     '<div class="bbflat-main">'+
+      '<span class="bbflat-mkt-inline '+(MKT_CLS[bet.market]||'')+'">'+(MKT_LABEL[bet.market]||bet.market)+'</span>'+
       '<span class="bbflat-side">'+bet.pick_side+'</span>'+
       '<span class="bbflat-match">'+matchLabel+(timeLabel?' '+String.fromCharCode(183)+' '+timeLabel:'')+'</span>'+
     '</div>'+
