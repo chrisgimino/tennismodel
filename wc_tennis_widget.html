@@ -35,6 +35,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .brand-logo{height:22px;width:auto;display:block}
 .brand-logo-fallback{height:22px;padding:0 10px;border-radius:5px;background:var(--court);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--wh);letter-spacing:.5px}
 .brand-sub{font-size:9px;color:var(--ball);letter-spacing:1.5px;text-transform:uppercase;font-weight:800}
+.last-updated{font-size:9px;color:var(--sub);letter-spacing:.3px;font-variant-numeric:tabular-nums}
 
 .view-toggle{background:var(--bg2);border-bottom:1px solid var(--bd);padding:9px 16px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .vbtn{font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:6px 14px;background:var(--bg3);color:var(--sub);border:1px solid var(--bd2);cursor:pointer;border-radius:3px;transition:.15s}
@@ -78,10 +79,9 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .landing-empty{text-align:center;color:var(--dim);padding:40px 0;font-size:12px}
 
 .bbflat-list{display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:6px;overflow:hidden}
-.bbflat-row{display:grid;grid-template-columns:64px 1fr auto auto auto auto;gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--bd);cursor:pointer;background:var(--bg2);transition:.1s;opacity:.6}
-.bbflat-row.qual{opacity:1}
+.bbflat-row{display:grid;grid-template-columns:64px 1fr auto auto auto auto;gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--bd);cursor:pointer;background:var(--bg2);transition:.1s}
 .bbflat-row:last-child{border-bottom:none}
-.bbflat-row:hover{background:var(--bg3);opacity:1}
+.bbflat-row:hover{background:var(--bg3)}
 .bbflat-mkt{font-size:10px;font-weight:800;letter-spacing:.3px;border-radius:3px;padding:4px 7px;text-align:center}
 .mkt-ml{color:#5eb8ff;background:#071a2c;border:1px solid #1a4a80}
 .mkt-spread{color:#ffb84d;background:#2a1a05;border:1px solid #7a5218}
@@ -141,8 +141,10 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 .elo-row{display:flex;align-items:center;gap:6px;width:100%}
 .elo-lbl{font-size:8.5px;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;min-width:38px;font-weight:700}
 .elo-track{flex:1;max-width:110px;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden}
-.elo-fill{height:100%;border-radius:3px}
-.elo-pct{font-size:10.5px;font-weight:800;min-width:28px;text-align:right;font-variant-numeric:tabular-nums}
+.elo-fill{display:block;height:100%;border-radius:3px}
+.elo-pct{font-size:10.5px;font-weight:800;min-width:60px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.elo-pool{font-weight:600;color:var(--sub);font-size:9px}
+.elo-nr-note{font-weight:600;font-style:italic;font-size:8.5px;letter-spacing:0}
 
 /* ── TABS ── */
 .tab-bar{background:var(--bg2);border-bottom:1px solid var(--bd);display:flex;padding:0 16px}
@@ -168,6 +170,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
 
 /* ── BOX SCORE ── */
 .pt-hdr{padding:8px 16px;font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--clay);background:var(--bg2);border-bottom:1px solid var(--bd);border-top:1px solid var(--bd)}
+.pt-note{padding:8px 16px;font-size:10px;color:var(--sub);font-style:italic;line-height:1.4;border-bottom:1px solid var(--bd)}
 .pt{width:100%;border-collapse:collapse}
 .pt th{font-size:9px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--dim);padding:8px 5px;text-align:right;border-bottom:1px solid var(--bd2);background:var(--bg2);white-space:nowrap}
 .pt th:first-child{text-align:left;padding-left:16px;min-width:140px}
@@ -229,6 +232,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
     <div class="brand-logo-fallback" id="brandLogoFallback">ACTION</div>
   </div>
   <div class="brand-sub">Tennis Daily Matchups</div>
+  <div class="last-updated" id="lastUpdated"></div>
 </div>
 
 <div class="view-toggle" id="viewToggle">
@@ -257,7 +261,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
   <div class="pane" id="pane-mc"></div>
 </div>
 
-<div class="disc">PROJECTIONS &amp; ODDS DATA SUBJECT TO CHANGE AND NOT UPDATED LIVE. WIN PROBABILITIES BLEND AN ELO MODEL, POINT-LEVEL SIMULATION, AND DEVIGGED MARKET CONSENSUS. MATCHUP CHART SHOWS PERCENTILE RANK ON A PROPRIETARY 0-100 SCALE, NOT RAW STATISTICS. GRADES REFLECT MODEL EDGE VS. MARKET, NOT GUARANTEED OUTCOMES.</div>
+<div class="disc">PROJECTIONS &amp; ODDS DATA SUBJECT TO CHANGE AND NOT UPDATED in real time. WIN PROBABILITIES BLEND AN ELO MODEL, POINT-LEVEL SIMULATION, AND DEVIGGED MARKET CONSENSUS. MATCHUP CHART SHOWS PERCENTILE RANK ON A PROPRIETARY 0-100 SCALE, NOT RAW STATISTICS. GRADES REFLECT MODEL EDGE VS. MARKET, NOT GUARANTEED OUTCOMES.</div>
 
 <script>
 const CSV_URL = 'https://raw.githubusercontent.com/chrisgimino/tennismodel/refs/heads/main/slate_widget.csv';
@@ -326,6 +330,11 @@ async function boot(){
     if(!DATA.matches.length) throw new Error('No MATCH rows found in CSV');
     DATA.matches.sort(function(a,b){ return parseDate(a.scheduled_date) - parseDate(b.scheduled_date); });
     document.getElementById('loading-overlay').classList.add('hidden');
+    // generated_at comes from the pipeline itself (when the slate CSV was
+    // actually built), not just when this page happened to fetch it -- a
+    // real "as of" timestamp rather than a page-load proxy.
+    const genAt = DATA.matches[0] && DATA.matches[0].generated_at;
+    document.getElementById('lastUpdated').textContent = genAt ? ('Generated ' + genAt) : '';
     if(BRAND_LOGO_URL){
       document.getElementById('brandLogoImg').src = BRAND_LOGO_URL;
       document.getElementById('brandLogoImg').style.display = 'block';
@@ -452,12 +461,12 @@ function gradeBadge(grade){
   return '<span class="grade-badge grade-'+grade.replace('+','plus')+'">'+grade+'</span>';
 }
 
-function bestBetRowHtml(bet, m, qualifies){
+function bestBetRowHtml(bet, m){
   const edgeVal = num(bet.edge)||0;
   const cls = edgeColorCls(edgeVal, 0.05);
   const matchLabel = m ? (lastName(m.fav_name)+' vs '+lastName(m.dog_name)) : '';
   const timeLabel = m ? fmtMatchTime(m.scheduled_date) : '';
-  return '<div class="bbflat-row'+(qualifies?' qual':'')+'" data-eid="'+bet.event_id+'">'+
+  return '<div class="bbflat-row" data-eid="'+bet.event_id+'">'+
     '<span class="bbflat-mkt '+(MKT_CLS[bet.market]||'')+'">'+(MKT_LABEL[bet.market]||bet.market)+'</span>'+
     '<div class="bbflat-main">'+
       '<span class="bbflat-side">'+bet.pick_side+'</span>'+
@@ -476,10 +485,8 @@ function renderBestBetsLanding(){
   const visibleIds = {};
   matches.forEach(function(m){ visibleIds[m.event_id]=m; });
 
-  // Show EVERY evaluation for the visible slate, ranked by edge -- not just
-  // ones that clear the qualifying threshold. Qualifying bets get a visual
-  // highlight (see .bbflat-row.qual) so it's still easy to spot them at a
-  // glance without hiding everything else.
+  // Every evaluation for the visible slate, ranked by edge, displayed the
+  // same regardless of whether it clears the qualifying threshold.
   const allBets = DATA.bets.filter(function(b){
     return visibleIds[b.event_id];
   }).sort(function(a,b){ return (num(b.edge)||0)-(num(a.edge)||0); });
@@ -491,7 +498,7 @@ function renderBestBetsLanding(){
 
   let h='<div class="landing-wrap"><div class="landing-hdr"><div class="landing-title">Best Bets</div><div class="landing-count">'+allBets.length+' evaluations</div></div>';
   h += '<div class="bbflat-list">';
-  allBets.forEach(function(b){ h += bestBetRowHtml(b, visibleIds[b.event_id], isTrue(b.meets_threshold)); });
+  allBets.forEach(function(b){ h += bestBetRowHtml(b, visibleIds[b.event_id]); });
   h += '</div></div>';
   wrap.innerHTML=h;
   wrap.querySelectorAll('.bbflat-row').forEach(function(row){
@@ -525,20 +532,29 @@ function render(){
   if(AT==='mc') renderMC();
 }
 
-function eloFillColor(pctile){
-  if(pctile===null) return 'var(--dim)';
-  if(pctile>=65) return 'var(--g)';
-  if(pctile<=35) return 'var(--r)';
+function eloFillColor(pctileEquiv){
+  if(pctileEquiv===null) return 'var(--dim)';
+  if(pctileEquiv>=65) return 'var(--g)';
+  if(pctileEquiv<=35) return 'var(--r)';
   return 'var(--sub)';
 }
 
-function eloVizBlock(overallPctile, surfacePctile, alignRight){
-  const ovp = num(overallPctile);
-  const svp = num(surfacePctile);
+function eloVizBlock(overallRank, overallQualified, surfaceRank, surfaceQualified, poolSize, alignRight){
+  function rowHtml(label, rank, qualified){
+    if(rank===null || !qualified){
+      const note = (rank!==null) ? 'small sample' : String.fromCharCode(8212);
+      return '<div class="elo-row"><span class="elo-lbl">'+label+'</span><span class="elo-track"><span class="elo-fill" style="width:0%;background:var(--bg4)"></span></span><span class="elo-pct mono" style="color:var(--dim)">NR<span class="elo-nr-note"> ('+note+')</span></span></div>';
+    }
+    // Convert rank -> an equivalent fill ratio purely for the bar visual;
+    // the number shown is the rank itself, not a percentile.
+    const fillPct = poolSize ? (poolSize - rank + 1) / poolSize * 100 : 0;
+    const color = eloFillColor(fillPct);
+    return '<div class="elo-row"><span class="elo-lbl">'+label+'</span><span class="elo-track"><span class="elo-fill" style="width:'+fillPct+'%;background:'+color+'"></span></span><span class="elo-pct mono" style="color:'+color+'">#'+rank+(poolSize?'<span class="elo-pool"> / '+poolSize+'</span>':'')+'</span></div>';
+  }
   return '<div class="elo-viz'+(alignRight?' r':'')+'">'+
-    '<div class="elo-viz-hdr">Elo Percentile</div>'+
-    '<div class="elo-row"><span class="elo-lbl">Overall</span><span class="elo-track"><span class="elo-fill" style="width:'+(ovp!==null?ovp:0)+'%;background:'+eloFillColor(ovp)+'"></span></span><span class="elo-pct mono" style="color:'+eloFillColor(ovp)+'">'+(ovp!==null?Math.round(ovp)+'th':String.fromCharCode(8212))+'</span></div>'+
-    '<div class="elo-row"><span class="elo-lbl">Surface</span><span class="elo-track"><span class="elo-fill" style="width:'+(svp!==null?svp:0)+'%;background:'+eloFillColor(svp)+'"></span></span><span class="elo-pct mono" style="color:'+eloFillColor(svp)+'">'+(svp!==null?Math.round(svp)+'th':String.fromCharCode(8212))+'</span></div>'+
+    '<div class="elo-viz-hdr">Elo Rank</div>'+
+    rowHtml('Overall', overallRank, overallQualified)+
+    rowHtml('Surface', surfaceRank, surfaceQualified)+
   '</div>';
 }
 
@@ -560,7 +576,9 @@ function renderHdr(){
       (isTrue(m.fav_low_sample)?'<span class="gh-lowsample">LOW SAMPLE</span>':'')+
       '<div class="gh-ml mono '+favOddsCls+'">'+fmtOdds(m.fav_ml_odds)+'</div>'+
       '<div class="gh-prob '+favWpCls+'">'+favWp+'% win probability</div>'+
-      eloVizBlock(m.fav_chart_elo_overall_pctile, m.fav_chart_elo_surface_pctile, false)+
+      eloVizBlock(num(m.fav_chart_elo_overall_rank), isTrue(m.fav_chart_elo_overall_rank_qualified),
+                  num(m.fav_chart_elo_surface_rank), isTrue(m.fav_chart_elo_surface_rank_qualified),
+                  num(m.tour_pool_size), false)+
     '</div>'+
     '<div class="gh-mid">'+
       '<div class="gh-ou-box mono">'+(m.market_total_line||String.fromCharCode(8212))+'</div>'+
@@ -572,7 +590,9 @@ function renderHdr(){
       (isTrue(m.dog_low_sample)?'<span class="gh-lowsample">LOW SAMPLE</span>':'')+
       '<div class="gh-ml mono '+dogOddsCls+'">'+fmtOdds(m.dog_ml_odds)+'</div>'+
       '<div class="gh-prob '+dogWpCls+'">'+dogWp+'% win probability</div>'+
-      eloVizBlock(m.dog_chart_elo_overall_pctile, m.dog_chart_elo_surface_pctile, true)+
+      eloVizBlock(num(m.dog_chart_elo_overall_rank), isTrue(m.dog_chart_elo_overall_rank_qualified),
+                  num(m.dog_chart_elo_surface_rank), isTrue(m.dog_chart_elo_surface_rank_qualified),
+                  num(m.tour_pool_size), true)+
     '</div>'+
     '</div>';
 }
@@ -618,7 +638,8 @@ function renderOV(){
     '<tr><th>Player</th><th>Games</th><th>Aces</th><th>DFs</th><th>1st In%</th><th>1st Won%</th><th>2nd Won%</th><th>BP Saved</th></tr>'+
     buildRow(m,'fav')+
     buildRow(m,'dog')+
-  '</table>';
+  '</table>'+
+  '<div class="pt-note">Model grading is multi-faceted (Elo + simulation + market consensus); the box score above reflects the point-level simulation alone, so on rare occasions it may not perfectly line up with the overall bet grade above.</div>';
 
   document.getElementById('pane-ov').innerHTML=h;
 }
