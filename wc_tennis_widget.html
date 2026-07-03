@@ -296,7 +296,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-se
   <div class="pane" id="pane-mc"></div>
 </div>
 
-<div class="disc">PROJECTIONS &amp; ODDS DATA SUBJECT TO CHANGE AND NOT UPDATED in real time. WIN PROBABILITIES BLEND AN ELO MODEL, POINT-LEVEL SIMULATION, AND DEVIGGED MARKET CONSENSUS. MATCHUP CHART SHOWS PERCENTILE RANK ON A PROPRIETARY 0-100 SCALE, NOT RAW STATISTICS. GRADES REFLECT MODEL EDGE VS. MARKET, NOT GUARANTEED OUTCOMES.</div>
+<div class="disc">PROJECTIONS &amp; ODDS DATA SUBJECT TO CHANGE AND NOT UPDATED IN REAL TIME. WIN PROBABILITIES BLEND AN ELO MODEL, POINT-LEVEL SIMULATION, AND DEVIGGED MARKET CONSENSUS. MATCHUP CHART SHOWS PERCENTILE RANK ON A 0-100 SCALE, NOT RAW STATISTICS. GRADES REFLECT MODEL EDGE VS. MARKET, NOT GUARANTEED OUTCOMES.</div>
 
 <script>
 const CSV_URL = 'https://raw.githubusercontent.com/chrisgimino/tennismodel/refs/heads/main/slate_widget.csv';
@@ -669,7 +669,7 @@ function renderOV(){
   const m = matches[0];
   const allBets = betsForMatch(AG).slice().sort(function(a,b){return (num(b.edge)||0)-(num(a.edge)||0);});
 
-  let h='<div class="bb-match-wrap"><div class="bb-match-hdr-row"><div class="bb-match-hdr">Market Grades — All Tracked Markets</div>'+geToggleHtml()+'</div>';
+  let h='<div class="bb-match-wrap"><div class="bb-match-hdr-row"><div class="bb-match-hdr">Top Picks</div>'+geToggleHtml()+'</div>';
   if(allBets.length){
     allBets.forEach(function(b,i){ h+=bbmRow(i+1,b,isTrue(b.meets_threshold)); });
   } else {
@@ -732,7 +732,7 @@ function renderMC(){
 
   let h='<div class="mc-wrap">'+
     '<div class="mc-hdr">Matchup Chart</div>'+
-    '<div class="mc-subhdr">Proprietary percentile rank (0\u2013100) vs. the full tour pool on this surface. Higher is always better.</div>'+
+    '<div class="mc-subhdr">Percentile rank (0\u2013100) vs. the full tour pool on this surface. Higher is always better.</div>'+
     '<table class="mc-table">'+
     '<tr><th class="lbl"></th><th>'+lastName(m.fav_name)+(favSample<150?' <span class="mc-samplewarn">LOW SAMPLE</span>':'')+'</th><th>'+lastName(m.dog_name)+(dogSample<150?' <span class="mc-samplewarn">LOW SAMPLE</span>':'')+'</th></tr>';
 
